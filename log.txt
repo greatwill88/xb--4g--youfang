@@ -1,0 +1,400 @@
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
+[0/1] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/WORK/4G-YouFang/N716-R08-STD-OE-002/core_sdk/core_sdk/out/appimage_release
