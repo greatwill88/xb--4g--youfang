@@ -1358,7 +1358,8 @@ static void nwy_uart_test(void)
     else
         return;
 }
-
+#undef RS485_GPIO_PORT   //kuang,TODO,
+#define RS485_GPIO_PORT 23 //TODO, 
 static void nwy_rs485_test(void)
 {
     uint32_t name;
@@ -1369,26 +1370,61 @@ static void nwy_rs485_test(void)
     char *pstsnd = "hellors485";
 
     port = 1; /*uart port id*/
-    name = NWY_NAME_UART1;
+  //  name = NWY_NAME_UART1; //TEST OK
+    name = NWY_NAME_UART2;
+
     mode = 1; /*data*/
+
+    int kk= 0;
+
+while(1) {
+
+uint8_t valu = 0;
+
+    kk++;
+
+    if(kk < 20)
+        valu = 0;
+    else if(kk < 40)
+        valu = 1;
+    else
+        kk = 0;
 
     /*init: set RS485 as rx state*/
     hd = nwy_uart_init(name,mode);
-    nwy_rs485_direction_switch(RS485_GPIO_PORT, RS485_DIR_RX);
+   
+   if(nwy_uart_set_baud(hd,115200)) {
+     nwy_ext_echo("\r\n Init_bps_Success--115200");  
+   }
+
+    nwy_gpio_set_direction(RS485_GPIO_PORT,nwy_output);
+    nwy_gpio_set_value(RS485_GPIO_PORT,valu);  
+
+   // nwy_rs485_direction_switch(RS485_GPIO_PORT, RS485_DIR_RX);
+    nwy_ext_echo("\r\n rs485--Port_id==%d,%d",RS485_GPIO_PORT,valu);
+
 
     /*register cb func to uart drv */
     nwy_uart_reg_tx_cb(hd, nwy_uart_send_complet_handle );
 
     /* for send, set RS485 as tx state */
-    nwy_rs485_direction_switch(RS485_GPIO_PORT, RS485_DIR_TX);
+  //  nwy_rs485_direction_switch(RS485_GPIO_PORT, RS485_DIR_TX);
     nwy_uart_send_data(hd, (uint8_t *)pstsnd, strlen(pstsnd));
-    nwy_ext_input_gets("\r\Please sure to close this uart(0-no,1-yes):");
+    //nwy_ext_input_gets("\r\Please sure to close this uart(0-no,1-yes):");
     int cst = atoi(nwy_ext_sio_recv_buff);
+
+    cst = 1;
+    nwy_sleep(500);
     if(cst)
         nwy_uart_deinit(hd);
     else
         return;
+    }
 }
+
+
+
+
 
 #define SPI_NOR_TEST_DATA_SIZE    4096
 #define SPI_NOR_SIZE    (8 * 1024 * 1024)
@@ -9022,6 +9058,9 @@ static void prvThreadEntry(void *param)
                 break;
             case 78:
                 nwy_file_test_mine();
+            break ;
+            case 79:
+                test_485_snd();
             break ;
             default:
                 break;

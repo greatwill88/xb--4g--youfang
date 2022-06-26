@@ -696,3 +696,49 @@ void SET_Led_On_off(uint8_t led_name,uint8_t valu) {
     nwy_gpio_set_value(port,valu);    
 }
 
+
+void Set_RTS_on_off(uint8_t valu){
+    uint8_t port = 23; 
+    nwy_gpio_set_direction(port,nwy_output);
+    nwy_gpio_set_value(port,valu);    
+}
+
+
+#define  RS485_RTS_1 23 
+#define  RS485_RTS_2 19 
+void Snd_485_Msg_1(char *msg , int num) {
+    int value = 1;
+    int port;
+    int hd;
+
+    if(num == 1) {
+      port = RS485_RTS_1;
+      hd = nwy_uart_init(NWY_NAME_UART1,1);
+
+    } else if(num == 2) {
+      port = RS485_RTS_2;
+     hd = nwy_uart_init(NWY_NAME_UART2,1);
+    }
+
+   if(nwy_uart_set_baud(hd,115200)) {
+     nwy_ext_echo("\r\n Snd_485_==%d--115200",num);  
+   }
+    nwy_gpio_set_direction(port,nwy_output);
+    nwy_gpio_set_value(port,value); 
+    nwy_ext_echo("\r\n rs485--Port_id==%d,%d,%d",port,value,num);
+    nwy_uart_send_data(hd, (uint8_t *)msg, strlen(msg));
+     nwy_uart_deinit(hd);
+
+}
+
+
+void test_485_snd() {
+
+    while(1) {
+      Snd_485_Msg_1("\r\nI am RS485---1", 1);
+      nwy_sleep(1000);
+      Snd_485_Msg_1("\r\nI am RS485---2" , 2);
+      nwy_sleep(1000);
+    }
+
+}
