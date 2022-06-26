@@ -1929,6 +1929,9 @@ static void _gpioisropen(int param)
         nwy_ext_echo("\r\ngpio isr set success");
 }
 
+
+
+
 void nwy_gpio_test()
 {
     int test = 0;
@@ -9100,8 +9103,8 @@ g_app_thread = nwy_create_thread("mythread", prvThreadEntry, NULL, NWY_OSI_PRIOR
 
 #else
     g_app_thread = nwy_create_thread("mythread", prvThreadEntry_Get_Value, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
- //   start_Call_Thread();
-  //  start_Ble_Scan_Thread();
+    start_Call_Thread();
+   start_Ble_Scan_Thread();
   //  g_timer_XB = nwy_timer_init(g_app_thread, nwy_app_timer_xb, NULL);
   // if(nwy_start_timer_periodic(g_timer_XB, 500)== true) {
   //      OSI_LOGI(0, "Timer_Start_OK");  

@@ -681,3 +681,18 @@ void nwy_tcp_test_Mine(int step,char *para1,char *para2,char *para3,char *para4)
         }
     }
 }
+
+
+void SET_Led_On_off(uint8_t led_name,uint8_t valu) {
+    uint8_t port = 4;
+
+    if(led_name == LED_YELLOW) 
+        port = 4;
+    else  if(led_name == LED_RED) 
+        port = 28;
+    else  if(led_name == LED_GREEN) 
+        port = 24;
+    nwy_gpio_set_direction(port,nwy_output);
+    nwy_gpio_set_value(port,valu);    
+}
+

@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 
-#define TEST_HELLO_WORLD 
+//#define TEST_HELLO_WORLD 
 
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 
@@ -19,6 +19,14 @@ extern "C" {
 #define MQTT_TOPIC_SND "test_mqtt_123456789"
 #define MQTT_TOPIC_REC "/test/RecMqtt88"
 #define MQTT_TOPIC_WILL "xb/testEMQ"
+
+
+
+#define LED_YELLOW 0
+#define LED_RED 1
+#define LED_GREEN 2 
+#define LED_ON 1
+#define LED_OFF 0
 
 typedef struct nwy_file_ftp_info_s
 {
@@ -61,6 +69,7 @@ extern void nwy_wifi_test_xb(void);
 extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
 extern void start_Ble_Scan_Thread(void);
 extern void nwy_file_test_mine(void);
+extern void SET_Led_On_off(uint8_t led_name,uint8_t valu);
 extern nwy_sim_result_type xb_sim;
 
 extern void Gernerate_Topic_ctrl(char *topic,int len);

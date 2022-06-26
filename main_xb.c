@@ -67,6 +67,8 @@
 #include "nwy_sat.h"
 #endif
 
+
+#include "prj.h"
 nwy_time_t xb_time= {2020, 3,19,20,33,30};
 char xb_timezone =0;
 float temp_IC;
@@ -154,6 +156,19 @@ void prvThreadEntry_Get_Value(void *param) {
             get_CCID_Fun();
            // nwy_wifi_test_xb();
         }
+
+
+        if(nn%2) {
+            SET_Led_On_off(LED_YELLOW,LED_ON);            
+            SET_Led_On_off(LED_RED,LED_ON);            
+            SET_Led_On_off(LED_GREEN,LED_ON);
+
+        } else {
+            SET_Led_On_off(LED_YELLOW,LED_OFF); 
+            SET_Led_On_off(LED_RED,LED_OFF);            
+            SET_Led_On_off(LED_GREEN,LED_OFF);           
+        }
+
         nwy_sleep(500);
     
     }
