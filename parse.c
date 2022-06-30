@@ -56,7 +56,7 @@ void reply_Cmd_Cloud(char *msg) {
     Str_4_Cat(msg, "\"lastwillsay\":","\"",LastWill_Msg,"\",");
     Str_3_Cat(msg, "\"ts\":",Time_Stamp,","); 
     Str_3_Cat(msg, "\"runtime\":",Time_Run,",");
-    Str_4_Cat(msg, "\"sn\":","\"",xb_sim.nImei,"\",");   
+    Str_4_Cat(msg, "\"sn\":","\"xbwg",xb_sim.nImei,"\",");   
     Str_4_Cat(msg, "\"iccid\":","\"",xb_sim.iccid,"\",");  
     strcat(msg, "}");
 

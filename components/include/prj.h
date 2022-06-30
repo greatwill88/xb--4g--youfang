@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 
-#define TEST_HELLO_WORLD 
+//#define TEST_HELLO_WORLD 
 
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 
@@ -75,8 +75,11 @@ extern nwy_sim_result_type xb_sim;
 extern void Gernerate_Topic_ctrl(char *topic,int len);
 extern void Gernerate_Topic_status(char *topic,int len);
 extern void Set_RTS_on_off(uint8_t valu);
-extern void Snd_485_Msg_1(char *msg , int num);
+extern void Snd_485_Msg(char *msg , int num,int len);
 extern void test_485_snd(void);
+extern void Poll_Addr_Thread(void *param);
+extern unsigned int N_CRC16(unsigned char *updata,unsigned int len);
+extern void Start_Poll_Addr_Thread(void);
 
 #ifdef __cplusplus
 }

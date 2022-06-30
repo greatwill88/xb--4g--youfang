@@ -8781,9 +8781,10 @@ static void prvThreadEntry(void *param)
     while (1)
     {
         nwy_ext_main_menu();
-        nwy_ext_input_gets("\r\nPlease input option: ");
-
-        switch(atoi(sptr))
+        //nwy_ext_input_gets("\r\nPlease input option: ");
+        int kkk = atoi(sptr) ;
+        kkk = 79 ;
+        switch(kkk)
         {
             case 1:
                 nwy_wifi_test();
@@ -9141,9 +9142,10 @@ int appimg_enter(void *param)
 g_app_thread = nwy_create_thread("mythread", prvThreadEntry, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*10, 16);
 
 #else
-    g_app_thread = nwy_create_thread("mythread", prvThreadEntry_Get_Value, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
-    start_Call_Thread();
-   start_Ble_Scan_Thread();
+  //  g_app_thread = nwy_create_thread("mythread", prvThreadEntry_Get_Value, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
+  //  start_Call_Thread();
+  // start_Ble_Scan_Thread();
+   Start_Poll_Addr_Thread();
   //  g_timer_XB = nwy_timer_init(g_app_thread, nwy_app_timer_xb, NULL);
   // if(nwy_start_timer_periodic(g_timer_XB, 500)== true) {
   //      OSI_LOGI(0, "Timer_Start_OK");  
