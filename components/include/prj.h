@@ -80,7 +80,7 @@ extern void test_485_snd(void);
 extern void Poll_Addr_Thread(void *param);
 extern unsigned int N_CRC16(unsigned char *updata,unsigned int len);
 extern void Start_Poll_Addr_Thread(void);
-
+extern void nwy_ext_send_sig(nwy_osiThread_t *thread,uint16 sig);
 #ifdef __cplusplus
 }
 #endif

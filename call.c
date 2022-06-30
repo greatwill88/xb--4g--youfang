@@ -71,6 +71,7 @@
 #include "nwy_test_cli_func_def.h"
 
 
+uint8_t Poll_Addr_id = 0;
 extern int tcp_connect_flag;
 extern int ppp_state[10];
 
@@ -741,6 +742,12 @@ void Snd_485_Msg(char *msg , int num,int len ) {
 
 }
 
+
+char xb_SubDev_SN[4][12];
+
+
+#define EVENT_REC_485 0x55AA
+
 void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
 
@@ -752,6 +759,8 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
 
   }
+
+  nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
 }
 
 static void nwy_485_recv_handle_1 (const char *str, uint32_t length) {
@@ -857,18 +866,35 @@ unsigned int N_CRC16(unsigned char *updata,unsigned int len)
 }
 
 void Poll_Addr_Thread(void *param) {
-  uint8_t id = 0;
+
   unsigned int crc ;
-  poll_Cmd[2] = id;
-  crc = N_CRC16(poll_Cmd,3);
-  poll_Cmd[3] = crc>>8;
-  poll_Cmd[4] = crc & 0x0ff;
+  nwy_osiEvent_t event;
 
   Init_485();
   while(1) {
+  poll_Cmd[0] = 0;
+  poll_Cmd[1] = 0;     
+  poll_Cmd[2] = Poll_Addr_id;
+  crc = N_CRC16(poll_Cmd,3);
+  poll_Cmd[3] = crc>>8;
+  poll_Cmd[4] = crc & 0x0ff;
     nwy_ext_echo("\r\n Run_Poll_Addr_Thread"); 
     Snd_485_Msg(poll_Cmd ,1, 5);
-    nwy_sleep(2000);
+
+        memset(&event, 0, sizeof(event));
+        nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 0);
+        if (event.id == EVENT_REC_485){
+            nwy_ext_echo("\r\n Rec_event=%x", event.id);
+            Poll_Addr_id++;
+        }
+
+        if(Poll_Addr_id >= 4) {
+          nwy_ext_echo("\r\n exit_thread--");
+          nwy_exit_thread(); 
+          nwy_ext_echo("\r\n exit====now"); 
+        }
+
+   // nwy_sleep(2000);
 
 
   }
