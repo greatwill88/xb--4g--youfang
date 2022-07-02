@@ -484,6 +484,8 @@ void prvThreadEntry_Call(void *param)
 
 nwy_osiThread_t *g_app_Call_thread = NULL;
 nwy_osiThread_t *g_app_Poll_Addr_thread = NULL;
+nwy_osiThread_t *g_app_Ctrl_thread = NULL;
+
  void start_Call_Thread(void){
     g_app_Call_thread = nwy_create_thread("callThread", prvThreadEntry_Call, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*10, 16);
  }
@@ -746,10 +748,23 @@ void Snd_485_Msg(char *msg , int num,int len ) {
 char xb_SubDev_SN[4][12];
 
 
+void Set_Poll_Addr_Pin_Low(void) {
+      int port;
+     port = 14  ; 
+    nwy_gpio_set_direction(port,nwy_output);
+    nwy_gpio_set_value(port,0);  
+
+     port = 15 ; 
+    nwy_gpio_set_direction(port,nwy_output);
+    nwy_gpio_set_value(port,0); 
+}
+
+
 #define EVENT_REC_485 0x55AA
 
 void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
+  int id;
 
   if(length < 2) {
     return ;  
@@ -757,8 +772,10 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   crc = N_CRC16(str,length-2);
   nwy_ext_echo("\r\nRs-485-handle--1-crc=%x,length = %d,uart_id = %d",crc,length,hd);
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
-
+    id = str[0];
+    memcpy(&xb_SubDev_SN[id][0],&str[2],12);
   }
+
 
   nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
 }
@@ -865,6 +882,9 @@ unsigned int N_CRC16(unsigned char *updata,unsigned int len)
   return (uchCRCLo<<8|uchCRCHi);  // 位在前
 }
 
+#define RS_485_DEV 1 
+#define RS_485_OUT 2 
+
 void Poll_Addr_Thread(void *param) {
 
   unsigned int crc ;
@@ -872,27 +892,29 @@ void Poll_Addr_Thread(void *param) {
 
   Init_485();
   while(1) {
-  poll_Cmd[0] = 0;
-  poll_Cmd[1] = 0;     
-  poll_Cmd[2] = Poll_Addr_id;
-  crc = N_CRC16(poll_Cmd,3);
-  poll_Cmd[3] = crc>>8;
-  poll_Cmd[4] = crc & 0x0ff;
+    Set_Poll_Addr_Pin_Low(); ///TODO, 
+    poll_Cmd[0] = 0;
+    poll_Cmd[1] = 0;     
+    poll_Cmd[2] = Poll_Addr_id;
+    crc = N_CRC16(poll_Cmd,3);
+    poll_Cmd[3] = crc>>8;
+    poll_Cmd[4] = crc & 0x0ff;
     nwy_ext_echo("\r\n Run_Poll_Addr_Thread"); 
-    Snd_485_Msg(poll_Cmd ,1, 5);
+    Snd_485_Msg(poll_Cmd ,RS_485_DEV, 5);
 
-        memset(&event, 0, sizeof(event));
-        nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 0);
-        if (event.id == EVENT_REC_485){
-            nwy_ext_echo("\r\n Rec_event=%x", event.id);
-            Poll_Addr_id++;
-        }
+    memset(&event, 0, sizeof(event));
+    nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 0);
+    if (event.id == EVENT_REC_485){
+        nwy_ext_echo("\r\n Rec_event=%x", event.id);
+        Poll_Addr_id++;
+    }
 
-        if(Poll_Addr_id >= 4) {
-          nwy_ext_echo("\r\n exit_thread--");
-          nwy_exit_thread(); 
-          nwy_ext_echo("\r\n exit====now"); 
-        }
+    if(Poll_Addr_id >= 4) {
+      nwy_ext_echo("\r\n exit_thread--");
+      Start_Ctrl_Thread(); 
+      nwy_exit_thread(); 
+
+    }
 
    // nwy_sleep(2000);
 
@@ -904,4 +926,39 @@ void Poll_Addr_Thread(void *param) {
 
  void Start_Poll_Addr_Thread(void){
     g_app_Poll_Addr_thread = nwy_create_thread("PollAddrThread", Poll_Addr_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
+ }
+
+
+uint8_t poll_id = 0;
+uint8_t poll_Ctrl_Cmd[4];
+
+ void Rs485_Ctrl_Thread(void *param) {
+  uint16_t crc;
+  nwy_osiEvent_t event;
+
+
+   while(1) {
+      poll_Ctrl_Cmd[0] = poll_id;
+      poll_Ctrl_Cmd[1] = 0x4D;
+      crc = N_CRC16(poll_Ctrl_Cmd,2);
+      poll_Ctrl_Cmd[2] = crc>>8;
+      poll_Ctrl_Cmd[3] = crc & 0x0ff;
+      memset(&event, 0, sizeof(event));
+      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 200);
+      if(event.id == EVENT_SND_485_CTRL) {
+
+      } else {
+        poll_id++;
+        if(poll_id >= 4) {
+          poll_id = 0;
+        }
+        Snd_485_Msg(poll_Ctrl_Cmd ,RS_485_DEV, sizeof(poll_Ctrl_Cmd));
+      }
+
+   }
+
+ }
+
+  void Start_Ctrl_Thread(void) {
+    g_app_Ctrl_thread = nwy_create_thread("RS485_Ctrl_Thread", Rs485_Ctrl_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
  }

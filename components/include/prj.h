@@ -28,6 +28,9 @@ extern "C" {
 #define LED_ON 1
 #define LED_OFF 0
 
+
+#define EVENT_SND_485_CTRL 0x1122
+
 typedef struct nwy_file_ftp_info_s
 {
   int is_vaild;
@@ -81,6 +84,10 @@ extern void Poll_Addr_Thread(void *param);
 extern unsigned int N_CRC16(unsigned char *updata,unsigned int len);
 extern void Start_Poll_Addr_Thread(void);
 extern void nwy_ext_send_sig(nwy_osiThread_t *thread,uint16 sig);
+extern void Start_Ctrl_Thread(void);
+extern void Key_Init_Fun(void);
+extern void prvThreadEntry_Key_Thread(void *param);
+extern void Start_Key_Thread(void);
 #ifdef __cplusplus
 }
 #endif

@@ -113,6 +113,7 @@ void prvThreadEntry_Get_Value(void *param) {
     static int i = 0;
     char buf[32];
     OSI_LOGI(0,"prvThreadEntry_Get_Value==%f",temp_IC);
+
     while(1) {
         i++;
 
@@ -219,4 +220,55 @@ void nwy_wifi_test_xb(void)
 	}
 }
 
+static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
+static nwy_test_cli_timer_cb()
+{
+    nwy_ext_echo("\r\nKey_press_Down_After=1000");
 
+}
+static void _gpioisropen(int param)
+{
+    nwy_ext_echo("\r\ngpio isr set success--start-timer--");
+    if(true == nwy_start_timer(s_nwy_test_timer, 1000)) {
+        nwy_ext_echo("\r\nTimer_Start_Succ");       
+    }
+}
+
+
+
+void Key_Init_Fun(void) {
+    int port = 27;
+    int data;
+    int nn = 0;
+    nwy_close_gpio(port);
+    while(nn <15) {
+        nn++;
+        nwy_sleep(1000);
+        nwy_ext_echo("\r\nInit_Key=%d",nn);  
+
+    }
+    data = nwy_open_gpio_irq_config(port,1,_gpioisropen);///falling edge ,
+    if (s_nwy_test_timer == NULL) {
+        s_nwy_test_timer = nwy_timer_init(nwy_get_current_thread(), nwy_test_cli_timer_cb, NULL);
+    } 
+}
+
+
+nwy_osiThread_t *g_Key_thread;
+
+void prvThreadEntry_Key_Thread(void *param) {
+    
+    Key_Init_Fun();
+    while(1) {
+        nwy_osiEvent_t event; 
+        memset(&event, 0, sizeof(event));
+        nwy_wait_thead_event(g_Key_thread, &event, 0);
+        if(event.id) {
+            nwy_ext_echo("\r\nKey_Event--");
+        }
+    }
+}
+
+ void Start_Key_Thread(void){
+    g_Key_thread = nwy_create_thread("PollKeyThread", prvThreadEntry_Key_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*1, 16);
+ }
