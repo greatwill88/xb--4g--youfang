@@ -75,24 +75,24 @@ uint8_t Poll_Addr_id = 0;
 extern int tcp_connect_flag;
 extern int ppp_state[10];
 
-extern void nwy_data_cb_fun(
+/* extern void nwy_data_cb_fun(
     int hndl,
-    nwy_data_call_state_t ind_state);
+    nwy_data_call_state_t ind_state); */
 
 
 
 
-// static void nwy_data_cb_fun(
-//     int hndl,
-//     nwy_data_call_state_t ind_state)
-// {
-//   OSI_LOGI(0, "=DATA= hndl=%d,ind_state=%d", hndl,ind_state);
-//   if (hndl > 0 && hndl <= 8)
-//   {
-//     ppp_state[hndl-1] = ind_state;
-//     nwy_ext_echo("\r\nData call status update, handle_id:%d,state:%d\r\n",hndl,ind_state);
-//   }
-// }
+static void nwy_data_cb_fun(
+    int hndl,
+    nwy_data_call_state_t ind_state)
+{
+  OSI_LOGI(0, "=DATA= hndl=%d,ind_state=%d", hndl,ind_state);
+  if (hndl > 0 && hndl <= 8)
+  {
+    ppp_state[hndl-1] = ind_state;
+    nwy_ext_echo("\r\nData call status update, handle_id:%d,state:%d\r\n",hndl,ind_state);
+  }
+}
 nwy_osiSemaphore_t      *s_Call_OK_semaphore = NULL;
 
 extern void nwy_test_cli_ble_open();
