@@ -717,38 +717,11 @@ void Snd_485_Msg(char *msg , int num,int len ) {
     int port;
     int hd;
 
-
-    if(num > 2) {
-      return ;
-    }
-
     if(num == 1) {
-      port = RS485_RTS_1;
-      hd = nwy_uart_init(NWY_NAME_UART1,1);   
-      nwy_uart_reg_recv_cb(hd,nwy_485_recv_handle_1);
-
+      Snd_485_Msg_Uart1( msg, len);
     } else if(num == 2) {
-      port = RS485_RTS_2;
-      hd= nwy_uart_init(NWY_NAME_UART2,1);
-      nwy_uart_reg_recv_cb(hd,nwy_485_recv_handle_2);
+      Snd_485_Msg_Uart2( msg, len);
     }
-
-   if(nwy_uart_set_baud(hd,115200)) {
-     nwy_ext_echo("\r\n Snd_485_==%d--115200---chn ===%d",num, hd);  
-   }
-    nwy_gpio_set_direction(port,nwy_output);
-    nwy_gpio_set_value(port,value); 
-    nwy_ext_echo("\r\n rs485--Port_id==%d,%d,%d",port,value,num);
-    nwy_uart_send_data(hd, (uint8_t *)msg, len);
-
-    nwy_sleep(2);
-
-    nwy_gpio_set_direction(port,nwy_output);
-    value = 0;    
-    nwy_gpio_set_value(port,value); 
-
-    RS485_hd[num - 1]= hd;
-  //  nwy_uart_deinit(RS485_hd[num-1]);
 
 }
 
@@ -801,6 +774,11 @@ void Snd_485_Msg_Uart2(char *msg , int len ) {
     nwy_gpio_set_value(port,value); 
     nwy_ext_echo("\r\n rs485--Port_id==%d,%d",port,value);
     nwy_uart_send_data(hd, (uint8_t *)msg, len);
+    nwy_sleep(2);
+    nwy_gpio_set_direction(port,nwy_output);
+
+    value = 0;
+    nwy_gpio_set_value(port,value); 
     RS485_hd[1]= hd;
   //  nwy_uart_deinit(RS485_hd[num-1]);
 
@@ -845,7 +823,10 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
     id = str[0];
     memcpy(&xb_SubDev_SN[id][0],&str[2],12);
-  }
+  } else {
+    id = str[0];
+    memcpy(&xb_SubDev_SN[id][0],&str[2],12);   
+  } 
 
 
   nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
@@ -992,6 +973,11 @@ void Poll_Addr_Thread(void *param) {
     nwy_ext_echo("\r\n Run_Poll_Addr_Thread--1"); 
 
     Snd_N_ISO_485(poll_Cmd ,5);
+
+    Snd_OUT_ISO_485(poll_Cmd ,5);
+
+
+
    // nwy_sleep(3000);
    // Snd_485_Msg(poll_Cmd ,RS_485_DEV, 5);
 
@@ -1045,7 +1031,7 @@ uint8_t poll_Ctrl_Cmd[4];
         if(poll_id >= 4) {
           poll_id = 0;
         }
-        Snd_485_Msg(poll_Ctrl_Cmd ,RS_485_DEV, sizeof(poll_Ctrl_Cmd));
+        Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
       }
 
    }
