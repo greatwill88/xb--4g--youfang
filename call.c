@@ -869,6 +869,7 @@ void Snd_Ctrl_Cmd(char id, uint16_t cmd) {
 }
 
 
+uint8_t Dev_Num = 0;
 static void nwy_485_recv_handle_1 (const char *str, uint32_t length) {
 
   handle_rec(RS485_hd[0],str, length );
@@ -987,7 +988,7 @@ void Poll_Addr_Thread(void *param) {
 
 
 
-  while(nn < 15) {
+  while(nn < 3) {
     nn++;
     nwy_sleep(1000);
     nwy_ext_echo("\r\n Test_485_Addr_Poll==%d",nn); 
@@ -1022,6 +1023,11 @@ void Poll_Addr_Thread(void *param) {
     if (event.id == EVENT_REC_485){
         nwy_ext_echo("\r\n Rec_event=%x", event.id);
         Poll_Addr_id++;
+    } else {
+      Dev_Num = Poll_Addr_id;
+        nwy_ext_echo("\r\n Over_Time==%d",Dev_Num);        
+        Start_Ctrl_Thread(); 
+        nwy_exit_thread();     
     }
 
     if(Poll_Addr_id >= 4) {
@@ -1060,10 +1066,10 @@ uint8_t thread_Fg = 0 ;
       poll_Ctrl_Cmd[2] = crc>>8;
       poll_Ctrl_Cmd[3] = crc & 0x0ff;
       memset(&event, 0, sizeof(event));
-      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 1000);
+      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 200);
       if(event.id == EVENT_SND_485_CTRL) {
         poll_id = 0;
-        while(poll_id < 4) {
+        while(poll_id < Dev_Num) {
           Snd_Ctrl_Cmd(poll_id, 0x55AA);
           poll_id++;
           nwy_ext_echo("\r\nSnd_Ctrl_Cmd==%,id=%d",0x55AA,poll_id); 
@@ -1072,7 +1078,7 @@ uint8_t thread_Fg = 0 ;
 
       } else {
         poll_id++;
-        if(poll_id >= 4) {
+        if(poll_id >= Dev_Num) {
           poll_id = 0;
         }
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));

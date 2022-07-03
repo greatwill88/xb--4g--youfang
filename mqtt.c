@@ -108,6 +108,12 @@ void Getnrate_Will_Msg(void) {
 
 }
 
+void Generate_Client_id(char *pt,int len) {
+  memset(pt, 0 , len);
+  strcat(pt, xb_sim.nImei);
+  //strcat(Will_Msg, "offline");
+}
+
 
 void Gernerate_Topic_ctrl(char *topic,int len) {
   memset(topic, 0 , len);
@@ -186,7 +192,7 @@ void nwy_paho_cycle(void)
   nwy_sleep(200);
 }
 
-
+char mqtt_report_Msg[256];
 void mqtt_Snd_Thread(void)
 {
   static int cnt = 0;
@@ -638,6 +644,11 @@ int SubMqtt(char *topic,char *qos) {
             nwy_ext_echo("\r\nClient--ID:%s",Client_ID);        
             nwy_ext_echo("\r\n%d-%d-%d %d:%d:%d", xb_time.year,xb_time.mon,xb_time.day, xb_time.hour,xb_time.min,xb_time.sec);    
             nwy_tcp_test_Mine(1,ip_addr,port_Num,NULL,NULL);
+           // memset(Client_ID,0 ,sizeof(Client_ID));
+           // strcat(Client_ID,xb_sim.nImei,sizeof(Client_ID));
+
+            Generate_Client_id(Client_ID,sizeof(Client_ID));
+
             nwy_paho_mqtt_test_mine(1, ip_addr, port_Num, Client_ID ,User_Name, password ,ssl_Setting);
 
         }
