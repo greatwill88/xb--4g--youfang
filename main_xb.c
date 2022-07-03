@@ -223,13 +223,13 @@ void nwy_wifi_test_xb(void)
 static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
 static nwy_test_cli_timer_cb()
 {
-    nwy_ext_echo("\r\nKey_press_Down_After=1000");
+    nwy_ext_echo("\r\nKey_press_Down_After=50");
 
 }
 static void _gpioisropen(int param)
 {
     nwy_ext_echo("\r\ngpio isr set success--start-timer--");
-    if(true == nwy_start_timer(s_nwy_test_timer, 1000)) {
+    if(true == nwy_start_timer(s_nwy_test_timer, 50)) {
         nwy_ext_echo("\r\nTimer_Start_Succ");       
     }
 }
@@ -241,11 +241,10 @@ void Key_Init_Fun(void) {
     int data;
     int nn = 0;
     nwy_close_gpio(port);
-    while(nn <15) {
+    while(nn < 5) {
         nn++;
         nwy_sleep(1000);
         nwy_ext_echo("\r\nInit_Key=%d",nn);  
-
     }
     data = nwy_open_gpio_irq_config(port,1,_gpioisropen);///falling edge ,
     if (s_nwy_test_timer == NULL) {

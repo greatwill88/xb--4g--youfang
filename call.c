@@ -706,6 +706,8 @@ void Set_RTS_on_off(uint8_t valu){
     nwy_gpio_set_value(port,valu);    
 }
 
+static void nwy_485_recv_handle_1 (const char *str, uint32_t length);
+static void nwy_485_recv_handle_2 (const char *str, uint32_t length);
 
 #define  RS485_RTS_1 23 
 #define  RS485_RTS_2 19 
@@ -722,28 +724,97 @@ void Snd_485_Msg(char *msg , int num,int len ) {
 
     if(num == 1) {
       port = RS485_RTS_1;
-      if(RS485_hd[num-1] == -1) {
-        RS485_hd[num-1] = nwy_uart_init(NWY_NAME_UART1,1);
-      }
-
+      hd = nwy_uart_init(NWY_NAME_UART1,1);   
+      nwy_uart_reg_recv_cb(hd,nwy_485_recv_handle_1);
 
     } else if(num == 2) {
       port = RS485_RTS_2;
-      if(RS485_hd[num-1] == -1) 
-        RS485_hd[num-1] = nwy_uart_init(NWY_NAME_UART2,1);
+      hd= nwy_uart_init(NWY_NAME_UART2,1);
+      nwy_uart_reg_recv_cb(hd,nwy_485_recv_handle_2);
     }
 
-   if(nwy_uart_set_baud(RS485_hd[num-1],115200)) {
-     nwy_ext_echo("\r\n Snd_485_==%d--115200",num);  
+   if(nwy_uart_set_baud(hd,115200)) {
+     nwy_ext_echo("\r\n Snd_485_==%d--115200---chn ===%d",num, hd);  
    }
     nwy_gpio_set_direction(port,nwy_output);
     nwy_gpio_set_value(port,value); 
     nwy_ext_echo("\r\n rs485--Port_id==%d,%d,%d",port,value,num);
-    nwy_uart_send_data(RS485_hd[num-1], (uint8_t *)msg, len);
+    nwy_uart_send_data(hd, (uint8_t *)msg, len);
+
+    nwy_sleep(2);
+
+    nwy_gpio_set_direction(port,nwy_output);
+    value = 0;    
+    nwy_gpio_set_value(port,value); 
+
+    RS485_hd[num - 1]= hd;
   //  nwy_uart_deinit(RS485_hd[num-1]);
 
 }
 
+void Snd_485_Msg_Uart1(char *msg , int len ) {
+    int value = 1;
+    int port;
+    int hd;
+
+
+    port = 19;
+    hd = nwy_uart_init(NWY_NAME_UART1,1);   
+    nwy_uart_reg_recv_cb(hd,nwy_485_recv_handle_1);
+
+
+    if(nwy_uart_set_baud(hd,115200)) {
+      nwy_ext_echo("\r\n Snd_485_--115200---chn ===%d", hd);  
+    }
+
+    nwy_gpio_set_direction(port,nwy_output);
+    value = 1;
+    nwy_gpio_set_value(port,value); 
+    nwy_ext_echo("\r\n rs485--Port_id==%d,%d",port,value);
+    nwy_uart_send_data(hd, (uint8_t *)msg, len);
+
+    nwy_sleep(2);
+
+    nwy_gpio_set_direction(port,nwy_output);
+    value = 0;
+    nwy_gpio_set_value(port,value); 
+
+    RS485_hd[0]= hd;
+}
+
+
+
+void Snd_485_Msg_Uart2(char *msg , int len ) {
+    int value = 1;
+    int port;
+    int hd;
+
+    port = 23;//RS485_RTS_2;
+    hd= nwy_uart_init(NWY_NAME_UART2,1);
+    nwy_uart_reg_recv_cb(hd,nwy_485_recv_handle_2);
+
+
+   if(nwy_uart_set_baud(hd,115200)) {
+     nwy_ext_echo("\r\n Snd_485_=-115200---chn ===%d", hd);  
+   }
+    nwy_gpio_set_direction(port,nwy_output);
+    nwy_gpio_set_value(port,value); 
+    nwy_ext_echo("\r\n rs485--Port_id==%d,%d",port,value);
+    nwy_uart_send_data(hd, (uint8_t *)msg, len);
+    RS485_hd[1]= hd;
+  //  nwy_uart_deinit(RS485_hd[num-1]);
+
+}
+void Snd_N_ISO_485(char *msg , int len ) {
+  nwy_ext_echo("\r\n Snd_N_ISO_48522");
+  Snd_485_Msg_Uart1(msg , len);  
+}
+
+
+void Snd_OUT_ISO_485(char *msg , int len ) {
+  nwy_ext_echo("\r\n Snd_OUT_ISO_485");
+  Snd_485_Msg_Uart2(msg , len);  
+}
 
 char xb_SubDev_SN[4][12];
 
@@ -780,6 +851,8 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
 }
 
+
+
 static void nwy_485_recv_handle_1 (const char *str, uint32_t length) {
 
   handle_rec(RS485_hd[0],str, length );
@@ -806,6 +879,11 @@ void Init_485(void) {
     else if(i == 1) 
       nwy_uart_reg_recv_cb(RS485_hd[i],nwy_485_recv_handle_2);
   }
+
+  nwy_ext_echo("\r\n Uart_handle_id ==%d,%d",RS485_hd[0], RS485_hd[1]);  
+
+
+
 }
 
 
@@ -882,16 +960,28 @@ unsigned int N_CRC16(unsigned char *updata,unsigned int len)
   return (uchCRCLo<<8|uchCRCHi);  // 位在前
 }
 
-#define RS_485_DEV 1 
-#define RS_485_OUT 2 
+#define RS_485_DEV 2 
+#define RS_485_OUT 1 
 
 void Poll_Addr_Thread(void *param) {
 
   unsigned int crc ;
+  int nn = 0;
   nwy_osiEvent_t event;
 
+
+
+  while(nn < 15) {
+    nn++;
+    nwy_sleep(1000);
+    nwy_ext_echo("\r\n Test_485_Addr_Poll==%d",nn); 
+  }
   Init_485();
   while(1) {
+
+
+
+
     Set_Poll_Addr_Pin_Low(); ///TODO, 
     poll_Cmd[0] = 0;
     poll_Cmd[1] = 0;     
@@ -899,11 +989,14 @@ void Poll_Addr_Thread(void *param) {
     crc = N_CRC16(poll_Cmd,3);
     poll_Cmd[3] = crc>>8;
     poll_Cmd[4] = crc & 0x0ff;
-    nwy_ext_echo("\r\n Run_Poll_Addr_Thread"); 
-    Snd_485_Msg(poll_Cmd ,RS_485_DEV, 5);
+    nwy_ext_echo("\r\n Run_Poll_Addr_Thread--1"); 
+
+    Snd_N_ISO_485(poll_Cmd ,5);
+   // nwy_sleep(3000);
+   // Snd_485_Msg(poll_Cmd ,RS_485_DEV, 5);
 
     memset(&event, 0, sizeof(event));
-    nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 0);
+    nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 3000);
     if (event.id == EVENT_REC_485){
         nwy_ext_echo("\r\n Rec_event=%x", event.id);
         Poll_Addr_id++;
@@ -914,7 +1007,7 @@ void Poll_Addr_Thread(void *param) {
       Start_Ctrl_Thread(); 
       nwy_exit_thread(); 
 
-    }
+    } 
 
    // nwy_sleep(2000);
 
@@ -925,7 +1018,7 @@ void Poll_Addr_Thread(void *param) {
 }
 
  void Start_Poll_Addr_Thread(void){
-    g_app_Poll_Addr_thread = nwy_create_thread("PollAddrThread", Poll_Addr_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
+    g_app_Poll_Addr_thread = nwy_create_thread("PollAddrThread", Poll_Addr_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*4, 16);
  }
 
 
