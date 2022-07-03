@@ -796,6 +796,11 @@ void Snd_OUT_ISO_485(char *msg , int len ) {
 
 char xb_SubDev_SN[4][12];
 
+typedef strcut {
+  uint8_t type;
+  uint8_t sn[12];
+}Sub_Dev_Info;
+
 
 void Set_Poll_Addr_Pin_Low(void) {
       int port;
@@ -813,7 +818,7 @@ void Set_Poll_Addr_Pin_Low(void) {
 
 void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
-  int id;
+  char id;
 
   if(length < 2) {
     return ;  
@@ -822,16 +827,38 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   nwy_ext_echo("\r\nRs-485-handle--1-crc=%x,length = %d,uart_id = %d",crc,length,hd);
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
     id = str[0];
-    memcpy(&xb_SubDev_SN[id][0],&str[2],12);
+    if(id < 0) id = -id;
+    if(id <4) {
+      memcpy(&xb_SubDev_SN[id][0],&str[2],12);
+    }
+    nwy_ext_echo("\r\nCrc_check--ok");
   } else {
     id = str[0];
-    memcpy(&xb_SubDev_SN[id][0],&str[2],12);   
+    if(id < 0) id = -id;
+    if(id <4) {
+      memcpy(&xb_SubDev_SN[id][0],&str[2],12);
+    }    
+     nwy_ext_echo("\r\nCrc_check--error"); 
   } 
 
 
   nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
 }
 
+
+void Snd_Ctrl_Cmd(char id, uint16_t cmd) {
+  char buf[6];
+  uint16_t crc;
+  buf[0] = id;
+  buf[1] = 0x65;
+  buf[2] = cmd >> 8;
+  buf[3] = cmd & 0x0ff;
+  crc = N_CRC16(buf,4);
+  buf[4] = crc >> 8;
+  buf[5] = crc & 0x0ff;
+  Snd_N_ISO_485(buf,sizeof(buf));
+
+}
 
 
 static void nwy_485_recv_handle_1 (const char *str, uint32_t length) {
@@ -1023,8 +1050,15 @@ uint8_t poll_Ctrl_Cmd[4];
       poll_Ctrl_Cmd[2] = crc>>8;
       poll_Ctrl_Cmd[3] = crc & 0x0ff;
       memset(&event, 0, sizeof(event));
-      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 200);
+      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 500);
       if(event.id == EVENT_SND_485_CTRL) {
+        poll_id = 0;
+        while(poll_id <4) {
+          Snd_Ctrl_Cmd(poll_id, 0x55AA);
+          poll_id++;
+          nwy_ext_echo("\r\nSnd_Ctrl_Cmd==%,id=%d",0x55AA,poll_id); 
+          nwy_sleep(100);
+        }
 
       } else {
         poll_id++;

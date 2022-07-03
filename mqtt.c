@@ -88,6 +88,41 @@ char echo_buff[NWY_EXT_SIO_PER_LEN + 1] = {0};
 nwy_paho_mqtt_at_param_type paho_mqtt_at_param = {0};
 nwy_osiMutex_t *ext_mutex = NULL;
 
+char topic_will[64];
+char Will_Msg[64];
+
+
+void Getnrate_Will_Topic(void) {
+  memset(topic_will, 0 , 64);
+  memcpy(topic_will, "Gateway/xbzl/will",sizeof("Gateway/xbzl/will"));
+
+
+}
+
+void Getnrate_Will_Msg(void) {
+  memset(Will_Msg, 0 , 64);
+  strcat(Will_Msg, xb_sim.nImei);
+  strcat(Will_Msg, "offline");
+
+
+}
+
+
+void Gernerate_Topic_ctrl(char *topic,int len) {
+  memset(topic, 0 , len);
+  strcat(topic, "Gateway/");
+  strcat(topic, xb_sim.nImei);
+  strcat(topic, "/ctrraw");
+}
+
+
+void Gernerate_Topic_status(char *topic,int len) {
+  memset(topic, 0 , len);
+  strcat(topic, "Gateway/");
+  strcat(topic, xb_sim.nImei);
+  strcat(topic, "/stateraw");
+}
+
 void messageArrived(MessageData* md)
 {
   char topic_name[PAHO_TOPIC_LEN_MAX] = {0};
@@ -147,6 +182,7 @@ void mqtt_Snd_Thread(void)
 {
   static int cnt = 0;
   char buf[128];
+  char snd_topic[64];
 
 
   while(1)
@@ -161,7 +197,9 @@ void mqtt_Snd_Thread(void)
         cnt++;
         snprintf(buf,128,"hello===test---%d",cnt);
         nwy_ext_echo("\r\nRun_nwy_paho_cycle======%d",cnt);
-        Snd_Mqtt(MQTT_TOPIC_SND,"2", "0",buf);
+
+        Gernerate_Topic_ctrl(snd_topic,sieof(snd_topic));
+        Snd_Mqtt(snd_topic,"2", "0",buf);
       }
 
     }
@@ -320,7 +358,7 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
          paho_mqtt_at_param.cleanflag = 0;
          //nwy_ext_input_gets("\r\nPlease input keep_alive: ");
         // paho_mqtt_at_param.keepalive = atoi(sptr);
-         paho_mqtt_at_param.keepalive = 60;
+         paho_mqtt_at_param.keepalive = 4;// 60;
          nwy_ext_echo("\r\nip:%s, port :%d",paho_mqtt_at_param.host_name, paho_mqtt_at_param.port);
          rc = NetworkConnect(paho_network, paho_mqtt_at_param.host_name, paho_mqtt_at_param.port);
          if (rc < 0)
@@ -343,9 +381,12 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
          data.keepAliveInterval = paho_mqtt_at_param.keepalive;
          data.cleansession = paho_mqtt_at_param.cleanflag;
         
-        
-         memcpy(paho_mqtt_at_param.willtopic,MQTT_TOPIC_WILL,sizeof(MQTT_TOPIC_WILL) );//TODO,kuang,
-        memcpy(paho_mqtt_at_param.willmessage,"offine",sizeof("offine") );//TODO,kuang,
+        Getnrate_Will_Topic();
+        memcpy(paho_mqtt_at_param.willtopic,topic_will,sizeof(topic_will) );//TODO,kuang,
+
+
+        Getnrate_Will_Msg();    
+        memcpy(paho_mqtt_at_param.willmessage,Will_Msg,sizeof(Will_Msg) );//TODO,kuang,
         paho_mqtt_at_param.willmessage_len  = strlen((char*)paho_mqtt_at_param.willmessage);//TODO,kuang,
          if (0 != strlen((char*)paho_mqtt_at_param.willtopic))
          {
@@ -597,20 +638,6 @@ int SubMqtt(char *topic,char *qos) {
 
 
 
-void Gernerate_Topic_ctrl(char *topic,int len) {
-  memset(topic, 0 , len);
-  strcat(topic, "Gateway/");
-  strcat(topic, xb_sim.nImei);
-  strcat(topic, "/ctrraw");
-}
-
-
-void Gernerate_Topic_status(char *topic,int len) {
-  memset(topic, 0 , len);
-  strcat(topic, "Gateway/");
-  strcat(topic, xb_sim.nImei);
-  strcat(topic, "/stateraw");
-}
 
 #endif
 

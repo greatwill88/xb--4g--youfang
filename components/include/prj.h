@@ -16,9 +16,9 @@ extern "C" {
 #define MAX_NUM 32
 #define NWY_UART_RECV_SINGLE_MAX   512
 #define NWY_FILE_NAME_MAX          32
-#define MQTT_TOPIC_SND "test_mqtt_123456789"
+//#define MQTT_TOPIC_SND "test_mqtt_123456789"
 #define MQTT_TOPIC_REC "/test/RecMqtt88"
-#define MQTT_TOPIC_WILL "xb/testEMQ"
+//#define MQTT_TOPIC_WILL "xb/testEMQ"
 
 
 
@@ -74,7 +74,8 @@ extern void start_Ble_Scan_Thread(void);
 extern void nwy_file_test_mine(void);
 extern void SET_Led_On_off(uint8_t led_name,uint8_t valu);
 extern nwy_sim_result_type xb_sim;
-
+extern void Getnrate_Will_Topic(void);
+extern void Snd_Ctrl_Cmd(char id, uint16_t cmd);
 extern void Gernerate_Topic_ctrl(char *topic,int len);
 extern void Gernerate_Topic_status(char *topic,int len);
 extern void Set_RTS_on_off(uint8_t valu);
