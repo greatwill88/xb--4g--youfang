@@ -796,7 +796,7 @@ void Snd_OUT_ISO_485(char *msg , int len ) {
 
 char xb_SubDev_SN[4][12];
 
-typedef strcut {
+typedef struct {
   uint8_t type;
   uint8_t sn[12];
 }Sub_Dev_Info;
@@ -841,8 +841,16 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
      nwy_ext_echo("\r\nCrc_check--error"); 
   } 
 
+  if(thread_Fg == 1) {
+    nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
+  } else {
+    //nwy_ext_send_sig(g_app_Ctrl_thread, EVENT_REC_485);
+    nwy_ext_echo("\r\nPoll_Info==%d---",length);
+    for(int i = 0; i < length;i++) {
+      nwy_ext_echo("%x-", *(str+i));
+    }    
+  }
 
-  nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
 }
 
 
@@ -985,9 +993,10 @@ void Poll_Addr_Thread(void *param) {
     nwy_ext_echo("\r\n Test_485_Addr_Poll==%d",nn); 
   }
   Init_485();
+  //  thread_Fg  = 1;  
   while(1) {
 
-
+    thread_Fg  = 1;
 
 
     Set_Poll_Addr_Pin_Low(); ///TODO, 
@@ -1037,23 +1046,24 @@ void Poll_Addr_Thread(void *param) {
 
 uint8_t poll_id = 0;
 uint8_t poll_Ctrl_Cmd[4];
-
+uint8_t thread_Fg = 0 ;
  void Rs485_Ctrl_Thread(void *param) {
   uint16_t crc;
   nwy_osiEvent_t event;
 
 
    while(1) {
+      thread_Fg = 2;
       poll_Ctrl_Cmd[0] = poll_id;
       poll_Ctrl_Cmd[1] = 0x4D;
       crc = N_CRC16(poll_Ctrl_Cmd,2);
       poll_Ctrl_Cmd[2] = crc>>8;
       poll_Ctrl_Cmd[3] = crc & 0x0ff;
       memset(&event, 0, sizeof(event));
-      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 500);
+      nwy_wait_thead_event(g_app_Ctrl_thread, &event, 1000);
       if(event.id == EVENT_SND_485_CTRL) {
         poll_id = 0;
-        while(poll_id <4) {
+        while(poll_id < 4) {
           Snd_Ctrl_Cmd(poll_id, 0x55AA);
           poll_id++;
           nwy_ext_echo("\r\nSnd_Ctrl_Cmd==%,id=%d",0x55AA,poll_id); 
@@ -1075,3 +1085,12 @@ uint8_t poll_Ctrl_Cmd[4];
   void Start_Ctrl_Thread(void) {
     g_app_Ctrl_thread = nwy_create_thread("RS485_Ctrl_Thread", Rs485_Ctrl_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
  }
+
+
+
+
+  void snd_key_Event(void) {
+  nwy_osiEvent_t event;
+  event.id = EVENT_SND_485_CTRL;
+  nwy_send_thead_event(g_app_Ctrl_thread, &event, 0);
+  }

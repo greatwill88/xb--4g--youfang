@@ -92,6 +92,7 @@ char topic_will[64];
 char Will_Msg[64];
 
 
+
 void Getnrate_Will_Topic(void) {
   memset(topic_will, 0 , 64);
   memcpy(topic_will, "Gateway/xbzl/will",sizeof("Gateway/xbzl/will"));
@@ -112,9 +113,15 @@ void Gernerate_Topic_ctrl(char *topic,int len) {
   memset(topic, 0 , len);
   strcat(topic, "Gateway/");
   strcat(topic, xb_sim.nImei);
-  strcat(topic, "/ctrraw");
+  strcat(topic, "/stateraw");
 }
 
+void Gernerate_Topic_Rec_Cmd(char *topic,int len) {
+  memset(topic, 0 , len);
+  strcat(topic, "Gateway/");
+  strcat(topic, xb_sim.nImei);
+  strcat(topic, "/ctrraw");
+}
 
 void Gernerate_Topic_status(char *topic,int len) {
   memset(topic, 0 , len);
@@ -160,8 +167,10 @@ void nwy_paho_cycle(void)
 {
   static int cnt = 0;
   char buf[128];
+  char topic_cmd_rec[64];
 
-  SubMqtt(MQTT_TOPIC_REC,"2");
+  Gernerate_Topic_Rec_Cmd(topic_cmd_rec,sizeof(topic_cmd_rec));
+  SubMqtt(topic_cmd_rec,"2");
   while(1)
   {
     static int _10_Cnt = 0;
@@ -198,7 +207,7 @@ void mqtt_Snd_Thread(void)
         snprintf(buf,128,"hello===test---%d",cnt);
         nwy_ext_echo("\r\nRun_nwy_paho_cycle======%d",cnt);
 
-        Gernerate_Topic_ctrl(snd_topic,sieof(snd_topic));
+        Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
         Snd_Mqtt(snd_topic,"2", "0",buf);
       }
 

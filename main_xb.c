@@ -224,6 +224,7 @@ static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
 static nwy_test_cli_timer_cb()
 {
     nwy_ext_echo("\r\nKey_press_Down_After=50");
+    snd_key_Event();
 
 }
 static void _gpioisropen(int param)

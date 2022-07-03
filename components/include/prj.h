@@ -46,7 +46,7 @@ typedef enum
   NWY_CUSTOM_IP_TYPE_OR_DNS_IPV6 = 1,
   NWY_CUSTOM_IP_TYPE_OR_DNS_DNS = 2
 }nwy_ip_type_or_dns_enum;
-
+extern uint8_t thread_Fg;
 extern int nwy_ext_sio_len;
 extern char nwy_ext_sio_recv_buff[NWY_EXT_SIO_RX_MAX + 1];
 extern int get_CCID_Fun(void);
@@ -89,6 +89,7 @@ extern void Start_Ctrl_Thread(void);
 extern void Key_Init_Fun(void);
 extern void prvThreadEntry_Key_Thread(void *param);
 extern void Start_Key_Thread(void);
+extern void snd_key_Event(void);
 #ifdef __cplusplus
 }
 #endif
