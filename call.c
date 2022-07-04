@@ -826,12 +826,17 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   crc = N_CRC16(str,length-2);
   nwy_ext_echo("\r\nRs-485-handle--1-crc=%x,length = %d,uart_id = %d",crc,length,hd);
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
-    id = str[0];
-    if(id < 0) id = -id;
-    if(id <4) {
-      memcpy(&xb_SubDev_SN[id][0],&str[2],12);
+    if(thread_Fg == 1){
+      id = str[0];
+      if(id < 0) id = -id;
+      if(id <4) {
+        memcpy(&xb_SubDev_SN[id][0],&str[2],12);
+      }
+      nwy_ext_echo("\r\nCrc_check--ok--poll");
+    } else {
+
     }
-    nwy_ext_echo("\r\nCrc_check--ok");
+
   } else {
     id = str[0];
     if(id < 0) id = -id;
@@ -846,9 +851,14 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   } else {
     //nwy_ext_send_sig(g_app_Ctrl_thread, EVENT_REC_485);
     nwy_ext_echo("\r\nPoll_Info==%d---",length);
+    memset(mqtt_report_Msg,0,sizeof(mqtt_report_Msg));
     for(int i = 0; i < length;i++) {
       nwy_ext_echo("%x-", *(str+i));
-    }    
+
+      snprintf(&mqtt_report_Msg[i*2],256,"%02x", *(str+i));
+    }
+    nwy_ext_echo("\r\nData_Report==%s",&mqtt_report_Msg[0]); 
+    nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
   }
 
 }

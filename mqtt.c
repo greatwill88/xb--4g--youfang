@@ -117,14 +117,14 @@ void Generate_Client_id(char *pt,int len) {
 
 void Gernerate_Topic_ctrl(char *topic,int len) {
   memset(topic, 0 , len);
-  strcat(topic, "Gateway/");
+  strcat(topic, "Gateway/xbwg");
   strcat(topic, xb_sim.nImei);
   strcat(topic, "/stateraw");
 }
 
 void Gernerate_Topic_Rec_Cmd(char *topic,int len) {
   memset(topic, 0 , len);
-  strcat(topic, "Gateway/");
+  strcat(topic, "Gateway/xbwg");
   strcat(topic, xb_sim.nImei);
   strcat(topic, "/ctrraw");
 }
@@ -203,10 +203,20 @@ void mqtt_Snd_Thread(void)
   while(1)
   {
     static int _10_Cnt = 0;
+    nwy_osiEvent_t event;
     while (MQTTIsConnected(&paho_mqtt_client))
     {
-      nwy_sleep(1000);
-      _10_Cnt++;
+
+     // nwy_sleep(1000);
+      memset(&event, 0 ,sizeof(event));
+      nwy_wait_thead_event(nwy_get_current_thread(), &event, 0);
+      if(event.id== REPORT_MSG) {
+        nwy_ext_echo("\r\nReport_Msg-mqtt");
+        Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
+        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+      }
+
+/*       _10_Cnt++;
       if(_10_Cnt >= 10) {
         _10_Cnt = 0;
         cnt++;
@@ -215,7 +225,7 @@ void mqtt_Snd_Thread(void)
 
         Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
         Snd_Mqtt(snd_topic,"2", "0",buf);
-      }
+      } */
 
     }
     nwy_ext_echo("\r\nMQTT disconnect ,Not_Snd");
