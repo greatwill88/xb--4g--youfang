@@ -849,7 +849,7 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   if(thread_Fg == 1) {
     nwy_ext_send_sig(g_app_Poll_Addr_thread, EVENT_REC_485);
   } else {
-    //nwy_ext_send_sig(g_app_Ctrl_thread, EVENT_REC_485);
+  #if 1
     nwy_ext_echo("\r\nPoll_Info==%d---",length);
     memset(mqtt_report_Msg,0,sizeof(mqtt_report_Msg));
     for(int i = 0; i < length;i++) {
@@ -857,8 +857,13 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
 
       snprintf(&mqtt_report_Msg[i*2],256,"%02x", *(str+i));
     }
+    mqtt_report_Len = length * 2;
+
     nwy_ext_echo("\r\nData_Report==%s",&mqtt_report_Msg[0]); 
+    
+    Generate_Report_WG_Info();
     nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
+  #endif
   }
 
 }
@@ -1091,7 +1096,14 @@ uint8_t thread_Fg = 0 ;
         if(poll_id >= Dev_Num) {
           poll_id = 0;
         }
+        static uint8_t kkk=0;
+        kkk++;
+
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
+        if(kkk > 20) {
+          kkk = 0;
+        //  Generate_Report_WG_Info();
+        }
       }
 
    }
@@ -1099,7 +1111,7 @@ uint8_t thread_Fg = 0 ;
  }
 
   void Start_Ctrl_Thread(void) {
-    g_app_Ctrl_thread = nwy_create_thread("RS485_Ctrl_Thread", Rs485_Ctrl_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
+    g_app_Ctrl_thread = nwy_create_thread("RS485_Ctrl_Thread", Rs485_Ctrl_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*5, 16);
  }
 
 

@@ -192,7 +192,8 @@ void nwy_paho_cycle(void)
   nwy_sleep(200);
 }
 
-char mqtt_report_Msg[256];
+char mqtt_report_Msg[512];
+int mqtt_report_Len;
 void mqtt_Snd_Thread(void)
 {
   static int cnt = 0;
@@ -208,24 +209,17 @@ void mqtt_Snd_Thread(void)
     {
 
      // nwy_sleep(1000);
+      Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
       memset(&event, 0 ,sizeof(event));
       nwy_wait_thead_event(nwy_get_current_thread(), &event, 0);
-      if(event.id== REPORT_MSG) {
+      if(event.id== REPORT_MQTT_MSG) {
         nwy_ext_echo("\r\nReport_Msg-mqtt");
-        Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
+        Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));        
+        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+      } else if(REPORT_MQTT_WG_MSG == event.id) {
+        nwy_ext_echo("\r\nReport_Msg_WG_mqtt_==");
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
       }
-
-/*       _10_Cnt++;
-      if(_10_Cnt >= 10) {
-        _10_Cnt = 0;
-        cnt++;
-        snprintf(buf,128,"hello===test---%d",cnt);
-        nwy_ext_echo("\r\nRun_nwy_paho_cycle======%d",cnt);
-
-        Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
-        Snd_Mqtt(snd_topic,"2", "0",buf);
-      } */
 
     }
     nwy_ext_echo("\r\nMQTT disconnect ,Not_Snd");

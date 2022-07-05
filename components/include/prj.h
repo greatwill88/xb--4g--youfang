@@ -30,7 +30,9 @@ extern "C" {
 
 extern nwy_osiThread_t *mqtt_Snd_task_id;
 #define EVENT_SND_485_CTRL 0x1122
-#define REPORT_MSG 0x1122
+#define REPORT_MQTT_MSG 0x1122
+#define REPORT_MQTT_WG_MSG 0x0002
+
 typedef struct nwy_file_ftp_info_s
 {
   int is_vaild;
@@ -90,7 +92,9 @@ extern void Key_Init_Fun(void);
 extern void prvThreadEntry_Key_Thread(void *param);
 extern void Start_Key_Thread(void);
 extern void snd_key_Event(void);
-extern char mqtt_report_Msg[256];
+extern void Generate_Report_WG_Info(void);
+extern char mqtt_report_Msg[512];
+extern int mqtt_report_Len;
 #ifdef __cplusplus
 }
 #endif

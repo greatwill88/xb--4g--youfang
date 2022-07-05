@@ -155,6 +155,8 @@ void prvThreadEntry_Get_Value(void *param) {
             nn = 0;
            // test_get_imei();
             get_CCID_Fun();
+           // Generate_Report_WG_Info();
+
            // nwy_wifi_test_xb();
         }
 
@@ -272,3 +274,135 @@ void prvThreadEntry_Key_Thread(void *param) {
  void Start_Key_Thread(void){
     g_Key_thread = nwy_create_thread("PollKeyThread", prvThreadEntry_Key_Thread, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*1, 16);
  }
+
+
+ 
+void Str_2_Cat(char *pDst,char *p1,char *p2) {
+    strcat(pDst,p1);
+    strcat(pDst,p2);
+}
+
+void Str_3_Cat(char *pDst,char *p1,char *p2,char *p3) {
+    Str_2_Cat(pDst,p1,p2);
+    strcat(pDst,p3);
+}
+
+void Str_4_Cat(char *pDst,char *p1,char *p2,char *p3,char *p4) {
+    Str_3_Cat(pDst,p1,p2,p3);
+    strcat(pDst,p4);
+}
+
+void pase_cmd(char *msg) {
+
+}
+
+
+void reply_Cmd_Cloud(char *msg) {
+
+    char domain[32] = "www.zxy168.cn";
+    char user_name[32]= "public";
+    char password[32]= "xb1555895588";
+    char time[32]= "";
+    int value = 30;
+    char LastWill[32]= "will";
+    char LastWill_Msg[32]= "off";
+    char Time_Stamp[32]= "";
+    int tme_Run_Cnt = 144;
+    char Time_Run[32]= "";
+
+    snprintf(time,sizeof(time),"%d",value);
+    snprintf(Time_Stamp,sizeof(time),"%d",time);
+    snprintf(Time_Run,sizeof(time),"%d",tme_Run_Cnt);
+    msg[0] = '{';
+    strcat(msg, "\"cmd\":\"cloud\",");
+    strcat(msg, "\"mqttip\":\"183.6.101.117\",");
+    strcat(msg, "\"mqttport\":1882,");
+    Str_4_Cat(msg, "\"mqttdomain\":","\"",domain,"\",");
+    Str_4_Cat(msg, "\"mqttuser\":","\"",user_name,"\",");
+    Str_4_Cat(msg, "\"mqttpsw\":","\"",password,"\",");
+    Str_3_Cat(msg, "\"mqtttime\":",time,",");
+    Str_4_Cat(msg, "\"lastwill\":","\"",LastWill,"\",");
+    Str_4_Cat(msg, "\"lastwillsay\":","\"",LastWill_Msg,"\",");
+    Str_3_Cat(msg, "\"ts\":",Time_Stamp,","); 
+    Str_3_Cat(msg, "\"runtime\":",Time_Run,",");
+    Str_4_Cat(msg, "\"sn\":","\"xbwg",xb_sim.nImei,"\",");   
+    Str_4_Cat(msg, "\"iccid\":","\"",xb_sim.iccid,"\",");  
+    strcat(msg, "}");
+
+}
+
+
+uint16_t value_zone_0 = 0xff;
+uint16_t value_zone_1 = 0x58;
+float temp_chip = 56.1;
+float voltage_Input = 220.5;
+
+
+extern MQTTClient paho_mqtt_client;
+
+/////
+void Generate_Report_WG_Info(void) {
+    char msg[512];
+    char temp[32];
+     
+    nwy_ext_echo("\r\nReport_WG_Info--every 20s\r\n"); 
+    memset(msg,0,sizeof(msg));
+    strcat(msg, xb_sim.iccid); 
+    Str_2_Cat(msg, ",","100"); ////TODO,
+    Str_2_Cat(msg, ",","2022-07-05-15:32:25"); ////TODO,
+    Str_2_Cat(msg, ",","115.112--116.223"); ////TODO,
+
+    memset(temp, 0 ,sizeof(temp));
+    snprintf(temp,32,"%02x",value_zone_0);
+    Str_2_Cat(msg, ",",temp);// 0区域数据，
+
+    memset(temp, 0 ,sizeof(temp));
+    snprintf(temp,32,"%02x",value_zone_1);
+    Str_2_Cat(msg, ",",temp);// 1区域数据
+
+    memset(temp, 0 ,sizeof(temp));
+    snprintf(temp,32,"%.1f",temp_chip);
+    Str_2_Cat(msg, ",",temp);//芯片温度。
+
+    memset(temp, 0 ,sizeof(temp));
+    snprintf(temp,32,"%.1f",voltage_Input);
+    Str_2_Cat(msg, ",",temp);//进线电压
+
+    // for(int i = 0;i < 2;i++){
+    // memset(temp, 0 ,sizeof(temp));
+
+    // Str_2_Cat(msg, ",",temp);//进线电压
+    // }
+    Str_3_Cat(msg, ",","111234567890","-");//white mac
+    Str_2_Cat(msg,"221234567890","-");///white mac
+
+    Str_3_Cat(msg, ",","331234567890","-");//all mac
+    Str_2_Cat(msg,"441234567890","-");//all mac 
+    Str_2_Cat(msg,"551234567890","-");//all mac 
+
+    Str_2_Cat(msg, ",","5");//num
+    Str_2_Cat(msg, ",","11011");
+    strcat(msg, "}");
+    
+
+    memset(mqtt_report_Msg,0,sizeof(mqtt_report_Msg));
+    mqtt_report_Len = strlen(msg);
+    memcpy(mqtt_report_Msg,msg,mqtt_report_Len);
+      nwy_ext_echo("\r\n=======Mqtt_SND:==%s",mqtt_report_Msg);
+
+
+
+/*     if(MQTTIsConnected(&paho_mqtt_client)) {
+        nwy_ext_echo("\r\nMqtt——-connectted\r\n");
+
+        if(mqtt_Snd_task_id) {
+            nwy_ext_echo("\r\nSnd_Signal--wg\r\n");
+            nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG); 
+        } else {
+            nwy_ext_echo("\r\nNo taskkk=====\r\n");            
+        }
+
+    } */
+  
+}
+
