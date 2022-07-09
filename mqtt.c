@@ -117,24 +117,19 @@ void Generate_Client_id(char *pt,int len) {
 
 void Gernerate_Topic_ctrl(char *topic,int len) {
   memset(topic, 0 , len);
-  strcat(topic, "Gateway/xbwg");
+  strcat(topic, "Gateway/XBWG");
   strcat(topic, xb_sim.nImei);
   strcat(topic, "/state");
 }
 
 void Gernerate_Topic_Rec_Cmd(char *topic,int len) {
   memset(topic, 0 , len);
-  strcat(topic, "Gateway/xbwg");
+  strcat(topic, "Gateway/XBWG");
   strcat(topic, xb_sim.nImei);
   strcat(topic, "/ctr");
 }
 
-void Gernerate_Topic_status(char *topic,int len) {
-  memset(topic, 0 , len);
-  strcat(topic, "Gateway/");
-  strcat(topic, xb_sim.nImei);
-  strcat(topic, "/stateraw");
-}
+
 
 void messageArrived(MessageData* md)
 {

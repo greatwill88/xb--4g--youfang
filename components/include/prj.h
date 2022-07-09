@@ -99,7 +99,7 @@ extern nwy_sim_result_type xb_sim;
 extern void Getnrate_Will_Topic(void);
 extern void Snd_Ctrl_Cmd(char id, uint16_t cmd);
 extern void Gernerate_Topic_ctrl(char *topic,int len);
-extern void Gernerate_Topic_status(char *topic,int len);
+
 extern void Set_RTS_on_off(uint8_t valu);
 extern void Snd_485_Msg(char *msg , int num,int len);
 extern void test_485_snd(void);

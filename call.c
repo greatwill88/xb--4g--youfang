@@ -1058,17 +1058,16 @@ void Poll_Addr_Thread(void *param) {
 
     Snd_OUT_ISO_485(poll_Cmd ,5);
 
-
-
-   // nwy_sleep(3000);
-   // Snd_485_Msg(poll_Cmd ,RS_485_DEV, 5);
-
     memset(&event, 0, sizeof(event));
-    nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 3000);
+  nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 3000);
+   //  nwy_wait_thead_event(g_app_Poll_Addr_thread, &event, 0);///TODO,
+  #if 1///def TODO_NOW
     if (event.id == EVENT_REC_485){
         nwy_ext_echo("\r\n Rec_event=%x", event.id);
         Poll_Addr_id++;
-    } else {
+    } 
+    else 
+    {
       Dev_Num = Poll_Addr_id;
         nwy_ext_echo("\r\n Over_Time==%d",Dev_Num);        
         Start_Ctrl_Thread(); 
@@ -1081,7 +1080,7 @@ void Poll_Addr_Thread(void *param) {
       nwy_exit_thread(); 
 
     } 
-
+#endif
    // nwy_sleep(2000);
 
 
