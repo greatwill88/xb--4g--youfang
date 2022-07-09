@@ -74,6 +74,14 @@ char xb_timezone =0;
 float temp_IC;
 float voltage_Xb;
 
+static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
+nwy_osiThread_t *g_Key_thread;
+uint16_t value_zone_0 = 0xff;
+uint16_t value_zone_1 = 0x58;
+float temp_chip = 56.1;
+float voltage_Input = 220.5;
+extern MQTTClient paho_mqtt_client;
+
 /* void nwy_app_timer_xb(void)
 {
     uint32_t adc_vol;
@@ -222,7 +230,10 @@ void nwy_wifi_test_xb(void)
 	}
 }
 
-static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
+
+
+
+
 static nwy_test_cli_timer_cb()
 {
     nwy_ext_echo("\r\nKey_press_Down_After=50");
@@ -256,7 +267,8 @@ void Key_Init_Fun(void) {
 }
 
 
-nwy_osiThread_t *g_Key_thread;
+
+
 
 void prvThreadEntry_Key_Thread(void *param) {
     
@@ -332,13 +344,7 @@ void reply_Cmd_Cloud(char *msg) {
 }
 
 
-uint16_t value_zone_0 = 0xff;
-uint16_t value_zone_1 = 0x58;
-float temp_chip = 56.1;
-float voltage_Input = 220.5;
 
-
-extern MQTTClient paho_mqtt_client;
 
 /////
 void Generate_Report_WG_Info(void) {
@@ -412,4 +418,7 @@ void Generate_Report_WG_Info(void) {
     } */
   
 }
+
+
+
 

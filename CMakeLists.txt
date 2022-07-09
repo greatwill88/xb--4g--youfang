@@ -171,7 +171,7 @@ if(CONFIG_APPIMG_LOAD_FLASH)
 	else()
 		set(target hello_flash)
 		add_appimg(${target} ${flash_ldscript} hello_world.c nwy_multi_socket_test.c nwy_azure_test.c nwy_drv_lcd_st7735.c main_xb.c mqtt.c call.c rs485.c ble_test.c
-        file_save.c
+        file_save.c parse.c
        # nwy_test_cli/comm/nwy_test_cli_adpt.c 
        #   nwy_test_cli/comm/nwy_test_cli_menu.c
        #   nwy_test_cli/comm/nwy_test_cli_utils.c
@@ -269,7 +269,7 @@ endif()
 if(CONFIG_APPIMG_LOAD_FILE)
     set(target hello_file)
     add_appimg(${target} ${file_ldscript} hello_world.c nwy_drv_lcd_st7735.c nwy_multi_socket_test.c main_xb.c mqtt.c call.c rs485.c ble_test.c
-    file_save.c
+    file_save.c  parse.c
        # nwy_test_cli/comm/nwy_test_cli_adpt.c 
        #   nwy_test_cli/comm/nwy_test_cli_menu.c
        #   nwy_test_cli/comm/nwy_test_cli_utils.c

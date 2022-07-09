@@ -33,6 +33,13 @@ extern nwy_osiThread_t *mqtt_Snd_task_id;
 #define REPORT_MQTT_MSG 0x1122
 #define REPORT_MQTT_WG_MSG 0x0002
 
+
+extern int tcp_connect_flag;
+extern int ppp_state[10];
+extern void nwy_test_cli_ble_open();
+extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
+
+#define MSG_REPLY_LEN 512
 typedef struct nwy_file_ftp_info_s
 {
   int is_vaild;
@@ -94,7 +101,7 @@ extern void Start_Key_Thread(void);
 extern void snd_key_Event(void);
 extern void Generate_Report_WG_Info(void);
 extern void Open_Pos_Location(bool fg_On_Off );
-extern char mqtt_report_Msg[512];
+extern char mqtt_report_Msg[MSG_REPLY_LEN];
 extern int mqtt_report_Len;
 #ifdef __cplusplus
 }

@@ -192,7 +192,7 @@ void nwy_paho_cycle(void)
   nwy_sleep(200);
 }
 
-char mqtt_report_Msg[512];
+char mqtt_report_Msg[MSG_REPLY_LEN];
 int mqtt_report_Len;
 void mqtt_Snd_Thread(void)
 {

@@ -72,8 +72,31 @@
 
 
 uint8_t Poll_Addr_id = 0;
-extern int tcp_connect_flag;
-extern int ppp_state[10];
+
+
+nwy_osiSemaphore_t      *s_Call_OK_semaphore = NULL;
+
+
+nwy_osiThread_t *g_app_Call_thread = NULL;
+nwy_osiThread_t *g_app_Poll_Addr_thread = NULL;
+nwy_osiThread_t *g_app_Ctrl_thread = NULL;
+static void nwy_485_recv_handle_1 (const char *str, uint32_t length);
+static void nwy_485_recv_handle_2 (const char *str, uint32_t length);
+
+#define  RS485_RTS_1 23 
+#define  RS485_RTS_2 19 
+int RS485_hd[2]={-1,-1};
+
+char xb_SubDev_SN[4][12];
+#define EVENT_REC_485 0x55AA
+
+uint8_t poll_Cmd[5];
+#define RS_485_DEV 2 
+#define RS_485_OUT 1 
+uint8_t poll_id = 0;
+uint8_t poll_Ctrl_Cmd[4];
+uint8_t thread_Fg = 0 ;
+
 
 /* extern void nwy_data_cb_fun(
     int hndl,
@@ -93,10 +116,8 @@ static void nwy_data_cb_fun(
     nwy_ext_echo("\r\nData call status update, handle_id:%d,state:%d\r\n",hndl,ind_state);
   }
 }
-nwy_osiSemaphore_t      *s_Call_OK_semaphore = NULL;
 
-extern void nwy_test_cli_ble_open();
-extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
+
 
 void prvThreadEntry_Call(void *param)
 {
@@ -482,9 +503,9 @@ void prvThreadEntry_Call(void *param)
 }
 
 
-nwy_osiThread_t *g_app_Call_thread = NULL;
-nwy_osiThread_t *g_app_Poll_Addr_thread = NULL;
-nwy_osiThread_t *g_app_Ctrl_thread = NULL;
+
+
+
 
  void start_Call_Thread(void){
     g_app_Call_thread = nwy_create_thread("callThread", prvThreadEntry_Call, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*10, 16);
@@ -706,12 +727,10 @@ void Set_RTS_on_off(uint8_t valu){
     nwy_gpio_set_value(port,valu);    
 }
 
-static void nwy_485_recv_handle_1 (const char *str, uint32_t length);
-static void nwy_485_recv_handle_2 (const char *str, uint32_t length);
 
-#define  RS485_RTS_1 23 
-#define  RS485_RTS_2 19 
-int RS485_hd[2]={-1,-1};
+
+
+
 void Snd_485_Msg(char *msg , int num,int len ) {
     int value = 1;
     int port;
@@ -794,7 +813,9 @@ void Snd_OUT_ISO_485(char *msg , int len ) {
   Snd_485_Msg_Uart2(msg , len);  
 }
 
-char xb_SubDev_SN[4][12];
+
+
+
 
 typedef struct {
   uint8_t type;
@@ -814,7 +835,9 @@ void Set_Poll_Addr_Pin_Low(void) {
 }
 
 
-#define EVENT_REC_485 0x55AA
+
+
+
 
 void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
@@ -932,7 +955,7 @@ void test_485_snd() {
 }
 
 
-uint8_t poll_Cmd[5];
+
 
 unsigned char auchCRCHi[]=
 {
@@ -992,8 +1015,8 @@ unsigned int N_CRC16(unsigned char *updata,unsigned int len)
   return (uchCRCLo<<8|uchCRCHi);  // 位在前
 }
 
-#define RS_485_DEV 2 
-#define RS_485_OUT 1 
+
+
 
 void Poll_Addr_Thread(void *param) {
 
@@ -1065,9 +1088,7 @@ void Poll_Addr_Thread(void *param) {
  }
 
 
-uint8_t poll_id = 0;
-uint8_t poll_Ctrl_Cmd[4];
-uint8_t thread_Fg = 0 ;
+
  void Rs485_Ctrl_Thread(void *param) {
   uint16_t crc;
   nwy_osiEvent_t event;
