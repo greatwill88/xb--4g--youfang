@@ -122,10 +122,36 @@ void Reply_Cloud_Cmd(char *msg ,int len){
 }
  */
 
+int IsRelay_Cmd(char *buf)
+{
+    if((buf[0] == 0)  && (buf[1] == 0x44)){
+        if((buf[2] == 0x55)  && (buf[3] == 0x00)) {
+            return 0;
+        }
+        if((buf[2] == 0x55)  && (buf[3] == 0x11)) {
+            return 1;
+        }
+        if((buf[2] == 0x55)  && (buf[3] == 0x22)) {
+            return 2;
+        }
+    }
+
+    return -1;
+}
 
 void handle_Net_Cmd(char *buf) {
     char *pt;
     pt = buf;
+
+    int i = 0;
+
+    i = IsRelay_Cmd(buf);
+
+    if(i >=0) {
+        nwy_ext_echo(" \r\nNet_Cmd==%d", i);
+        nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);    
+        return ;
+    }
 
     if(strstr(pt,"cloud=?")) {
        Reply_Cloud_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
@@ -139,10 +165,9 @@ void handle_Net_Cmd(char *buf) {
     }
 
 
-
 }
 
-
+nwy_log_cipgsmloc_result_t xb_position;
 static void nwy_cipgsmloc_cb(char *text)
 {
     nwy_log_cipgsmloc_result_t *param = (nwy_log_cipgsmloc_result_t *)text;
@@ -158,6 +183,9 @@ static void nwy_cipgsmloc_cb(char *text)
     {
         nwy_ext_echo(" %s\r\n", param->info.errmsg);
     }
+
+    memcpy(&xb_position, param, sizeof(xb_position));
+
     return ;
 }
 

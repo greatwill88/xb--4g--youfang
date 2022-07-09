@@ -80,7 +80,7 @@ uint16_t value_zone_0 = 0xff;
 uint16_t value_zone_1 = 0x58;
 float temp_chip = 56.1;
 float voltage_Input = 220.5;
-extern MQTTClient paho_mqtt_client;
+
 
 /* void nwy_app_timer_xb(void)
 {
@@ -343,9 +343,16 @@ void reply_Cmd_Cloud(char *msg) {
 
 }
 
+void Generate_White_Name(char *msg) {
+    Str_3_Cat(msg, ",","111234567890","-");//white mac
+    Str_2_Cat(msg,"221234567890"," ");///white mac
+}
 
-
-
+void Generate_All_Name(char *msg) {
+    Str_3_Cat(msg, ",","331234567890","-");//all mac
+    Str_2_Cat(msg,"441234567890","-");//all mac 
+    Str_2_Cat(msg,"551234567890"," ");//all mac 
+}
 /////
 void Generate_Report_WG_Info(void) {
     char msg[512];
@@ -380,12 +387,9 @@ void Generate_Report_WG_Info(void) {
 
     // Str_2_Cat(msg, ",",temp);//进线电压
     // }
-    Str_3_Cat(msg, ",","111234567890","-");//white mac
-    Str_2_Cat(msg,"221234567890"," ");///white mac
+    Generate_White_Name(msg);
+    Generate_All_Name(msg);
 
-    Str_3_Cat(msg, ",","331234567890","-");//all mac
-    Str_2_Cat(msg,"441234567890","-");//all mac 
-    Str_2_Cat(msg,"551234567890"," ");//all mac 
 
     Str_2_Cat(msg, ",","1");//posiotn,
     Str_2_Cat(msg, ",","115.112--116.223"); ////gps--position,

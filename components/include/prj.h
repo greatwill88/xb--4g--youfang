@@ -3,6 +3,7 @@
 
 #include "nwy_config.h"
 #include "nwy_sim.h"
+#include "MQTTClient.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,6 +11,9 @@ extern "C" {
 
 
 //#define TEST_HELLO_WORLD 
+#define RELAY_ALL_ON  0x5500
+#define RELAY_ALL_OFF 0x5511
+#define RELAY_ALL_RS  0x5522
 
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 
@@ -29,8 +33,15 @@ extern "C" {
 #define LED_OFF 0
 
 extern nwy_osiThread_t *mqtt_Snd_task_id;
+extern nwy_osiThread_t *g_RS485_Ctrl_thread;
+
 #define EVENT_SND_485_CTRL 0x1122
-#define REPORT_MQTT_MSG 0x1122
+
+#define EVENT_SND_485_ALL_ON 0x1132
+#define EVENT_SND_485_ALL_OFF 0x1133
+#define EVENT_SND_485_ALL_RS  0x1135
+
+#define REPORT_MQTT_MSG 0x1123
 #define REPORT_MQTT_WG_MSG 0x0002
 
 
@@ -38,6 +49,8 @@ extern int tcp_connect_flag;
 extern int ppp_state[10];
 extern void nwy_test_cli_ble_open();
 extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
+
+
 
 #define MSG_REPLY_LEN 512
 typedef struct nwy_file_ftp_info_s
@@ -103,6 +116,8 @@ extern void Generate_Report_WG_Info(void);
 extern void Open_Pos_Location(bool fg_On_Off );
 extern char mqtt_report_Msg[MSG_REPLY_LEN];
 extern int mqtt_report_Len;
+extern MQTTClient paho_mqtt_client;
+extern void handle_Net_Cmd(char *buf);
 #ifdef __cplusplus
 }
 #endif
