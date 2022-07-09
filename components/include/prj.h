@@ -93,6 +93,7 @@ extern void prvThreadEntry_Key_Thread(void *param);
 extern void Start_Key_Thread(void);
 extern void snd_key_Event(void);
 extern void Generate_Report_WG_Info(void);
+extern void Open_Pos_Location(bool fg_On_Off );
 extern char mqtt_report_Msg[512];
 extern int mqtt_report_Len;
 #ifdef __cplusplus

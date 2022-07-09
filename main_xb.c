@@ -347,11 +347,10 @@ void Generate_Report_WG_Info(void) {
      
     nwy_ext_echo("\r\nReport_WG_Info--every 20s\r\n"); 
     memset(msg,0,sizeof(msg));
-    strcat(msg, xb_sim.iccid); 
+    Str_2_Cat(msg,"0," ,xb_sim.iccid); 
     Str_2_Cat(msg, ",","100"); ////TODO,
     Str_2_Cat(msg, ",","2022-07-05-15:32:25"); ////TODO,
-    Str_2_Cat(msg, ",","115.112--116.223"); ////TODO,
-
+   
     memset(temp, 0 ,sizeof(temp));
     snprintf(temp,32,"%02x",value_zone_0);
     Str_2_Cat(msg, ",",temp);// 0区域数据，
@@ -368,20 +367,28 @@ void Generate_Report_WG_Info(void) {
     snprintf(temp,32,"%.1f",voltage_Input);
     Str_2_Cat(msg, ",",temp);//进线电压
 
+
+
     // for(int i = 0;i < 2;i++){
     // memset(temp, 0 ,sizeof(temp));
 
     // Str_2_Cat(msg, ",",temp);//进线电压
     // }
     Str_3_Cat(msg, ",","111234567890","-");//white mac
-    Str_2_Cat(msg,"221234567890","-");///white mac
+    Str_2_Cat(msg,"221234567890"," ");///white mac
 
     Str_3_Cat(msg, ",","331234567890","-");//all mac
     Str_2_Cat(msg,"441234567890","-");//all mac 
-    Str_2_Cat(msg,"551234567890","-");//all mac 
+    Str_2_Cat(msg,"551234567890"," ");//all mac 
 
+    Str_2_Cat(msg, ",","1");//posiotn,
+    Str_2_Cat(msg, ",","115.112--116.223"); ////gps--position,
     Str_2_Cat(msg, ",","5");//num
     Str_2_Cat(msg, ",","11011");
+
+    Str_3_Cat(msg, ",","661234567890","-");//white mac
+    Str_2_Cat(msg,"771234567890"," ");///white mac
+
     strcat(msg, "}");
     
 

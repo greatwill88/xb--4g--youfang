@@ -861,8 +861,8 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
 
     nwy_ext_echo("\r\nData_Report==%s",&mqtt_report_Msg[0]); 
     
-    Generate_Report_WG_Info();
-    nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
+    //Generate_Report_WG_Info();
+    //nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
   #endif
   }
 
@@ -1096,12 +1096,17 @@ uint8_t thread_Fg = 0 ;
         if(poll_id >= Dev_Num) {
           poll_id = 0;
         }
-        static uint8_t kkk=0;
+        static uint16_t kkk=0;
         kkk++;
 
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
-        if(kkk > 20) {
+        if(kkk > 5* 60) {
           kkk = 0;
+          Generate_Report_WG_Info();
+          nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",mqtt_Snd_task_id); 
+          Open_Pos_Location(1);
+          nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
+
         //  Generate_Report_WG_Info();
         }
       }

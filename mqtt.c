@@ -213,6 +213,7 @@ void mqtt_Snd_Thread(void)
       memset(&event, 0 ,sizeof(event));
       nwy_wait_thead_event(nwy_get_current_thread(), &event, 0);
       if(event.id== REPORT_MQTT_MSG) {
+        //Open_Pos_Location(1);
         nwy_ext_echo("\r\nReport_Msg-mqtt");
         Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));        
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);

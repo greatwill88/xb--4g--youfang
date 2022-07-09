@@ -5532,6 +5532,55 @@ void nwy_location_test()
    }
 }
 
+void Open_Pos_Location(bool fg_On_Off ) {
+   nwy_lbs_info_t databuf;   
+   nwy_ncell_lbs_info_t data_info;
+   bool loc_base_on;
+   int result1 = -1;
+
+   loc_base_on = fg_On_Off;
+    nwy_ext_echo("\r\n Test_Location--");
+	    	//nwy_ext_virtual_at_test();
+    	if (1 == nwy_ext_check_data_connect())
+		{
+			nwy_pdp_set_status(NWY_PDP_CONNECTED);
+		}
+		else
+		{
+			nwy_ext_echo("\r\n need module dail at+xiic = 1");
+	    	//nwy_ext_virtual_at_test();
+		}
+
+		nwy_sleep(50);
+
+    //  nwy_ext_input_gets("\r\n set location base position(1-on 0-off):");
+	//	loc_base_on = atoi(sptr);
+	    nwy_ext_echo("\r\n lbs_mode:%d", 1);
+
+		nwy_loc_get_lbs_info(&databuf);
+		nwy_ext_echo("\r\n cell_id:%d lac:%d mcc:%d mnc:%d csq:%d imei:%s",databuf.cell_id,databuf.lac,databuf.mcc,databuf.mnc,
+			databuf.rssi_csq,databuf.imei_str);
+
+		memset(&data_info,0x00,sizeof(data_info));
+        nwy_loc_get_ncell_lbs_info(&data_info);
+		nwy_ext_echo("\r\n cid num: %d ",data_info.num);
+		for(int i = 0; i < data_info.num; i++)
+		{
+		   nwy_ext_echo("\r\n index:%d pci:%d lac:%d cell_id:%d mcc:%d mnc:%d arcfn:%d rsrp:%d",i,data_info.ncell_lbs_info[i].pci,data_info.ncell_lbs_info[i].lac,
+		   	data_info.ncell_lbs_info[i].cell_id,data_info.ncell_lbs_info[i].mcc,data_info.ncell_lbs_info[i].mnc,data_info.ncell_lbs_info[i].arcfn,data_info.ncell_lbs_info[i].rsrp);
+		}
+
+		result1 = nwy_loc_cipgsmloc_open(loc_base_on, nwy_cipgsmloc_cb);
+        if (result1) {
+          nwy_ext_echo("\r\n lbs  success");
+        } else {
+          nwy_ext_echo("\r\n lbs fail");
+        }
+	    nwy_sleep(1000);
+}
+
+
+
 static int capture_len = 0;
 static uint8_t *audio_buf;
 #define AUDIO_RECORDER_DATA_LEN (1024 * 48 * 2)
