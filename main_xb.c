@@ -254,6 +254,8 @@ void Key_Init_Fun(void) {
     int port = 27;
     int data;
     int nn = 0;
+
+    return ;
     nwy_close_gpio(port);
     while(nn < 5) {
         nn++;

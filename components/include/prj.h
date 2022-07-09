@@ -41,8 +41,8 @@ extern nwy_osiThread_t *g_RS485_Ctrl_thread;
 #define EVENT_SND_485_ALL_OFF 0x1133
 #define EVENT_SND_485_ALL_RS  0x1135
 
-#define REPORT_MQTT_MSG 0x1123
-#define REPORT_MQTT_WG_MSG 0x0002
+#define REPORT_MQTT_MSG 0x1136
+#define REPORT_MQTT_WG_MSG 0x1137
 
 
 extern int tcp_connect_flag;

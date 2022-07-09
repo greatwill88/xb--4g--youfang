@@ -119,14 +119,14 @@ void Gernerate_Topic_ctrl(char *topic,int len) {
   memset(topic, 0 , len);
   strcat(topic, "Gateway/xbwg");
   strcat(topic, xb_sim.nImei);
-  strcat(topic, "/stateraw");
+  strcat(topic, "/state");
 }
 
 void Gernerate_Topic_Rec_Cmd(char *topic,int len) {
   memset(topic, 0 , len);
   strcat(topic, "Gateway/xbwg");
   strcat(topic, xb_sim.nImei);
-  strcat(topic, "/ctrraw");
+  strcat(topic, "/ctr");
 }
 
 void Gernerate_Topic_status(char *topic,int len) {
@@ -147,7 +147,7 @@ void messageArrived(MessageData* md)
   nwy_lock_mutex(ext_mutex, 0);
   nwy_ext_echo("\r\n===messageArrived======");
   nwy_ext_echo("\r\npayloader len is %d", md->message->payloadlen);
-  nwy_ext_echo("\r\n%s:\r\n", topic_name);
+  nwy_ext_echo("\r\ntopic:%s:\r\n", topic_name);
   remain_len = md->message->payloadlen;
   if(md->message->payloadlen > NWY_EXT_SIO_PER_LEN)
   {
@@ -157,6 +157,8 @@ void messageArrived(MessageData* md)
       strncpy(echo_buff, md->message->payload + i*NWY_EXT_SIO_PER_LEN,
               remain_len > NWY_EXT_SIO_PER_LEN ? NWY_EXT_SIO_PER_LEN : remain_len);
       remain_len = md->message->payloadlen- (i+1)*NWY_EXT_SIO_PER_LEN;
+      //nwy_ext_echo("\r\n%s:\r\n", topic_name);
+      nwy_ext_echo("\r\npayLoad--22====");
       nwy_ext_echo(echo_buff);
     }
   }
@@ -164,7 +166,11 @@ void messageArrived(MessageData* md)
   {
     memset(echo_buff, 0, sizeof(echo_buff));
     strncpy(echo_buff, md->message->payload, md->message->payloadlen);
+    nwy_ext_echo("\r\npayLoad--33====");
     nwy_ext_echo(echo_buff);
+    nwy_ext_echo("\r\npayLoad--44====");
+    handle_Net_Cmd(echo_buff);
+
   }
   nwy_unlock_mutex(ext_mutex);
 }
@@ -207,15 +213,14 @@ void mqtt_Snd_Thread(void)
     nwy_osiEvent_t event;
     while (MQTTIsConnected(&paho_mqtt_client))
     {
-
-     // nwy_sleep(1000);
+      nwy_ext_echo("\r\nRun__Thread_Mqtt");
       Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
       memset(&event, 0 ,sizeof(event));
-      nwy_wait_thead_event(nwy_get_current_thread(), &event, 0);
+      nwy_wait_thead_event(nwy_get_current_thread(), &event, 1000);
       if(event.id== REPORT_MQTT_MSG) {
         //Open_Pos_Location(1);
         nwy_ext_echo("\r\nReport_Msg-mqtt");
-        Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));        
+        //Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));        
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
       } else if(REPORT_MQTT_WG_MSG == event.id) {
         nwy_ext_echo("\r\nReport_Msg_WG_mqtt_==");
@@ -608,8 +613,12 @@ int SubMqtt(char *topic,char *qos) {
    char xb_timezone;
 
 #if 1
-  char ip_addr[]="183.6.101.117";
-  char port_Num[]="1882";
+  //char ip_addr[]="183.6.101.117";
+   //char port_Num[]="1882";
+char ip_addr[]="58.248.1.165";////new
+char port_Num[]="1883";////New
+
+
   char Client_ID[64]="test_Xb_iot";
   char User_Name[]="kuang";
   char password[]="kuang";

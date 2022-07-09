@@ -1146,12 +1146,12 @@ void Poll_Addr_Thread(void *param) {
         kkk++;
 
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
-        if(kkk > 5* 60) {
+        if(kkk > 5* 20) {
           kkk = 0;
           Generate_Report_WG_Info();
           nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",mqtt_Snd_task_id); 
           Open_Pos_Location(1);
-          nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
+          nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG);
 
         //  Generate_Report_WG_Info();
         }

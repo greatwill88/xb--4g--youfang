@@ -122,8 +122,20 @@ void Reply_Cloud_Cmd(char *msg ,int len){
 }
  */
 
-int IsRelay_Cmd(char *buf)
+int IsRelay_Cmd(char *msg)
 {
+    uint8_t buf[16];
+
+    uint8_t i = 0;
+
+    for(i = 0; i < 16;i+=2) {
+        buf[i/2] = *(msg +i)-'0';
+        buf[i/2] <<= 4;
+        buf[i/2] += *(msg +i +1)-'0';
+    }
+
+    nwy_ext_echo(" \r\ndecode--cmd=%x,%x,%x,%x\r\n", buf[0], buf[1], buf[2], buf[3]);
+
     if((buf[0] == 0)  && (buf[1] == 0x44)){
         if((buf[2] == 0x55)  && (buf[3] == 0x00)) {
             return 0;
@@ -146,7 +158,7 @@ void handle_Net_Cmd(char *buf) {
     int i = 0;
 
     i = IsRelay_Cmd(buf);
-
+    nwy_ext_echo(" \r\nHandle--Net_Cmd==%s", buf);
     if(i >=0) {
         nwy_ext_echo(" \r\nNet_Cmd==%d", i);
         nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);    
