@@ -355,6 +355,44 @@ void Generate_All_Name(char *msg) {
     Str_2_Cat(msg,"441234567890","-");//all mac 
     Str_2_Cat(msg,"551234567890"," ");//all mac 
 }
+
+void Generate_pos(char *msg) {
+    char pos[16];
+    nwy_log_cipgsmloc_result_t *param;
+    param =  &xb_position;
+
+    memset(pos,0,16);
+    snprintf(pos,16,%.4f,param->info.data.lat);
+    Str_2_Cat(msg, pos,"-");
+    memset(pos,0,16);
+    snprintf(pos,16,%.4f,param->info.data.lng);
+    strcat(msg, pos);
+
+}
+
+void Generate_Time(char *msg) {
+    char buf[32];
+    memset(buf, 0 ,32) ;
+    nwy_get_time(&xb_time, &xb_timezone);
+   // nwy_ext_echo("\r\n%d-%d-%d %d:%d:%d", xb_time.year,xb_time.mon,xb_time.day, xb_time.hour,xb_time.min,xb_time.sec);
+    snprintf(buf,32,"%d-%d-%d %d:%d:%d", xb_time.year,xb_time.mon,xb_time.day,xb_time.hour,xb_time.min,xb_time.sec);
+    Str_2_Cat(msg, ",", pos);    
+}
+
+void Generate_Zone(char *msg,uint16_t value) {
+    char buf[16];
+    memset(buf,0,16);
+    snprintf(buf,16,"%02x",value);
+    Str_2_Cat(msg, ",",buf);
+}
+
+void Generate_Tempera(char *msg,float value) {
+    char buf[16];
+    memset(buf,0,16);
+    snprintf(buf,16,"%.1f",value);
+    Str_2_Cat(msg, ",",buf);
+}
+
 /////
 void Generate_Report_WG_Info(void) {
     char msg[512];
@@ -364,42 +402,24 @@ void Generate_Report_WG_Info(void) {
     memset(msg,0,sizeof(msg));
     Str_2_Cat(msg,"0," ,xb_sim.iccid); 
     Str_2_Cat(msg, ",","100"); ////TODO,
-    Str_2_Cat(msg, ",","2022-07-05-15:32:25"); ////TODO,
+    Generate_Time(msg);
    
-    memset(temp, 0 ,sizeof(temp));
-    snprintf(temp,32,"%02x",value_zone_0);
-    Str_2_Cat(msg, ",",temp);// 0区域数据，
-
-    memset(temp, 0 ,sizeof(temp));
-    snprintf(temp,32,"%02x",value_zone_1);
-    Str_2_Cat(msg, ",",temp);// 1区域数据
-
-    memset(temp, 0 ,sizeof(temp));
-    snprintf(temp,32,"%.1f",temp_chip);
-    Str_2_Cat(msg, ",",temp);//芯片温度。
-
-    memset(temp, 0 ,sizeof(temp));
-    snprintf(temp,32,"%.1f",voltage_Input);
-    Str_2_Cat(msg, ",",temp);//进线电压
 
 
+    Generate_Zone(msg,value_zone_0);
+    Generate_Zone(msg,value_zone_1);
+    Generate_Tempera(char *msg,temp_chip);
+    Generate_Tempera(char *msg,voltage_Input);
 
-    // for(int i = 0;i < 2;i++){
-    // memset(temp, 0 ,sizeof(temp));
-
-    // Str_2_Cat(msg, ",",temp);//进线电压
-    // }
     Generate_White_Name(msg);
     Generate_All_Name(msg);
 
 
-    Str_2_Cat(msg, ",","1");//posiotn,
-    Str_2_Cat(msg, ",","115.112--116.223"); ////gps--position,
+   // Str_2_Cat(msg, ",","1");//posiotn,
+    Generate_pos(msg);
+    //Str_2_Cat(msg, ",","115.112--116.223"); ////gps--position,
     Str_2_Cat(msg, ",","5");//num
     Str_2_Cat(msg, ",","11011");
-
-    Str_3_Cat(msg, ",","661234567890","-");//white mac
-    Str_2_Cat(msg,"771234567890"," ");///white mac
 
     strcat(msg, "}");
     
@@ -407,7 +427,7 @@ void Generate_Report_WG_Info(void) {
     memset(mqtt_report_Msg,0,sizeof(mqtt_report_Msg));
     mqtt_report_Len = strlen(msg);
     memcpy(mqtt_report_Msg,msg,mqtt_report_Len);
-      nwy_ext_echo("\r\n=======Mqtt_SND:==%s",mqtt_report_Msg);
+    nwy_ext_echo("\r\n=======Mqtt_SND:==%s",mqtt_report_Msg);
 
 
 
