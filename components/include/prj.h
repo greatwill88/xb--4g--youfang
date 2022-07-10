@@ -46,7 +46,7 @@ extern nwy_osiThread_t *g_RS485_Ctrl_thread;
 #define REPORT_MQTT_MSG 0x1136
 #define REPORT_MQTT_WG_MSG 0x1137
 
-
+extern uint8_t Dev_Num;
 extern int tcp_connect_flag;
 extern int ppp_state[10];
 extern void nwy_test_cli_ble_open();

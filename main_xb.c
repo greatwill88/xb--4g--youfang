@@ -78,7 +78,6 @@ static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
 nwy_osiThread_t *g_Key_thread;
 uint16_t value_zone_0 = 0xff;
 uint16_t value_zone_1 = 0x58;
-float temp_chip = 56.1;
 float voltage_Input = 220.5;
 
 
@@ -401,6 +400,21 @@ void Generate_Signal(char *msg,uint8_t value) {
     Str_2_Cat(msg, ",",buf);
 }
 
+
+
+void Generate_Comm(char *msg) {
+ 
+    Generate_Zone(msg,value_zone_0);
+    Generate_Zone(msg,value_zone_1);
+   // nwy_dm_get_rftemperature(&temp_IC);
+    Generate_Tempera(msg,temp_IC);
+    Generate_Tempera(msg,voltage_Input);
+
+    Generate_White_Name(msg);
+    Generate_All_Name(msg);   
+
+}
+
 /////
 void Generate_Report_WG_Info(void) {
     char msg[512];
@@ -409,28 +423,19 @@ void Generate_Report_WG_Info(void) {
 
     nwy_nw_get_signal_csq(&csq_val);
      
-    nwy_ext_echo("\r\nReport_WG_Info--every 20s\r\n"); 
+    nwy_ext_echo("\r\nReport_WG_Info--every 20s--signal==%d\r\n",csq_val); 
     memset(msg,0,sizeof(msg));
     Str_2_Cat(msg,"0," ,xb_sim.iccid);
     Generate_Signal(msg,csq_val);
     Generate_Time(msg);
    
-
-
-    Generate_Zone(msg,value_zone_0);
-    Generate_Zone(msg,value_zone_1);
-    nwy_dm_get_rftemperature(&temp_chip);
-    Generate_Tempera(msg,temp_chip);
-    Generate_Tempera(msg,voltage_Input);
-
-    Generate_White_Name(msg);
-    Generate_All_Name(msg);
-
+    Generate_Comm(msg);
 
    // Str_2_Cat(msg, ",","1");//posiotn,
     Generate_pos(msg);
     //Str_2_Cat(msg, ",","115.112--116.223"); ////gps--position,
-    Str_2_Cat(msg, ",","5");//num
+    Generate_Signal(msg,dev_num)
+    //Str_2_Cat(msg, ",","5");//num
     Str_2_Cat(msg, ",","11011");
 
     strcat(msg, "}");
@@ -457,6 +462,23 @@ void Generate_Report_WG_Info(void) {
   
 }
 
+
+void Genrate_Zone1(void) {
+    if(temp_IC > 75)  value_zone_1 |= (1<<2);
+    if(temp_IC < -30) value_zone_1 |= (1<<3);
+
+    if(voltage_Input > 275) value_zone_1 |= (1<<0);
+    if(voltage_Input < 161) value_zone_1 |= (1<<1);
+}
+
+
+void Poll_Report_Zone1(void) {
+    static uint16_t last_Zone1;
+    Genrate_Zone1(); 
+    if(value_zone_1 != last_Zone1) {
+        last_Zone1 = value_zone_1;
+    }
+}
 
 
 
