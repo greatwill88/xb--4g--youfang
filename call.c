@@ -1153,8 +1153,8 @@ void Poll_Addr_Thread(void *param) {
 
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
 
-        kkk = 0;
-        if(kkk > 5* 20) {
+        //kkk = 0;
+        if(kkk > 5* 2) {
           kkk = 0;
           Generate_Report_WG_Info();
           nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",mqtt_Snd_task_id); 

@@ -356,16 +356,17 @@ void Generate_All_Name(char *msg) {
     Str_2_Cat(msg,"551234567890"," ");//all mac 
 }
 
+extern nwy_log_cipgsmloc_result_t xb_position;
 void Generate_pos(char *msg) {
     char pos[16];
     nwy_log_cipgsmloc_result_t *param;
     param =  &xb_position;
 
     memset(pos,0,16);
-    snprintf(pos,16,%.4f,param->info.data.lat);
+    snprintf(pos,16,"%.4f",param->info.data.lat);
     Str_2_Cat(msg, pos,"-");
     memset(pos,0,16);
-    snprintf(pos,16,%.4f,param->info.data.lng);
+    snprintf(pos,16,"%.4f",param->info.data.lng);
     strcat(msg, pos);
 
 }
@@ -376,7 +377,7 @@ void Generate_Time(char *msg) {
     nwy_get_time(&xb_time, &xb_timezone);
    // nwy_ext_echo("\r\n%d-%d-%d %d:%d:%d", xb_time.year,xb_time.mon,xb_time.day, xb_time.hour,xb_time.min,xb_time.sec);
     snprintf(buf,32,"%d-%d-%d %d:%d:%d", xb_time.year,xb_time.mon,xb_time.day,xb_time.hour,xb_time.min,xb_time.sec);
-    Str_2_Cat(msg, ",", pos);    
+    Str_2_Cat(msg, ",", buf);    
 }
 
 void Generate_Zone(char *msg,uint16_t value) {
@@ -393,23 +394,34 @@ void Generate_Tempera(char *msg,float value) {
     Str_2_Cat(msg, ",",buf);
 }
 
+void Generate_Signal(char *msg,uint8_t value) {
+    char buf[16];
+    memset(buf,0,16);
+    snprintf(buf,16,"%d",value);
+    Str_2_Cat(msg, ",",buf);
+}
+
 /////
 void Generate_Report_WG_Info(void) {
     char msg[512];
     char temp[32];
+    uint8_t csq_val;
+
+    nwy_nw_get_signal_csq(&csq_val);
      
     nwy_ext_echo("\r\nReport_WG_Info--every 20s\r\n"); 
     memset(msg,0,sizeof(msg));
-    Str_2_Cat(msg,"0," ,xb_sim.iccid); 
-    Str_2_Cat(msg, ",","100"); ////TODO,
+    Str_2_Cat(msg,"0," ,xb_sim.iccid);
+    Generate_Signal(msg,csq_val);
     Generate_Time(msg);
    
 
 
     Generate_Zone(msg,value_zone_0);
     Generate_Zone(msg,value_zone_1);
-    Generate_Tempera(char *msg,temp_chip);
-    Generate_Tempera(char *msg,voltage_Input);
+    nwy_dm_get_rftemperature(&temp_chip);
+    Generate_Tempera(msg,temp_chip);
+    Generate_Tempera(msg,voltage_Input);
 
     Generate_White_Name(msg);
     Generate_All_Name(msg);

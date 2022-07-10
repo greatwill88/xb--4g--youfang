@@ -4,6 +4,8 @@
 #include "nwy_config.h"
 #include "nwy_sim.h"
 #include "MQTTClient.h"
+//#include "nwy_loc.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,7 +51,7 @@ extern int tcp_connect_flag;
 extern int ppp_state[10];
 extern void nwy_test_cli_ble_open();
 extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
-extern nwy_log_cipgsmloc_result_t xb_position;
+//extern nwy_log_cipgsmloc_result_t xb_position;
 
 
 #define MSG_REPLY_LEN 512
