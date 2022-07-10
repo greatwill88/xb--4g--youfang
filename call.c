@@ -71,7 +71,7 @@
 #include "nwy_test_cli_func_def.h"
 
 
-uint8_t Poll_Addr_id = 0;
+uint8_t Poll_Addr_id = 1;
 
 
 nwy_osiSemaphore_t      *s_Call_OK_semaphore = NULL;
@@ -903,7 +903,7 @@ void Snd_Ctrl_Cmd(char id, uint16_t cmd) {
   char buf[6];
   uint16_t crc;
   buf[0] = id;
-  buf[1] = 0x65;
+  buf[1] = 0x44;
   buf[2] = cmd >> 8;
   buf[3] = cmd & 0x0ff;
   crc = N_CRC16(buf,4);
@@ -1110,7 +1110,7 @@ void Poll_Addr_Thread(void *param) {
         poll_Ctrl_Cmd[2] = 1;
       else
         poll_Ctrl_Cmd[2] = 0;
-
+      poll_Ctrl_Cmd[2] = 0;
       crc = N_CRC16(poll_Ctrl_Cmd,3);
       poll_Ctrl_Cmd[3] = crc>>8;
       poll_Ctrl_Cmd[4] = crc & 0x0ff;
@@ -1145,6 +1145,8 @@ void Poll_Addr_Thread(void *param) {
         kkk++;
 
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
+
+        kkk = 0;
         if(kkk > 5* 20) {
           kkk = 0;
           Generate_Report_WG_Info();

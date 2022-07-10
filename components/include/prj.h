@@ -11,9 +11,9 @@ extern "C" {
 
 
 //#define TEST_HELLO_WORLD 
-#define RELAY_ALL_ON  0x5500
-#define RELAY_ALL_OFF 0x5511
-#define RELAY_ALL_RS  0x5522
+#define RELAY_ALL_ON  0x0055
+#define RELAY_ALL_OFF 0x1155
+#define RELAY_ALL_RS  0x2255
 
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 

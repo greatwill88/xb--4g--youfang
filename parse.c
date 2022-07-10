@@ -137,13 +137,13 @@ int IsRelay_Cmd(char *msg)
     nwy_ext_echo(" \r\ndecode--cmd=%x,%x,%x,%x\r\n", buf[0], buf[1], buf[2], buf[3]);
 
     if((buf[0] == 0)  && (buf[1] == 0x44)){
-        if((buf[2] == 0x55)  && (buf[3] == 0x00)) {
+        if((buf[3] == 0x55)  && (buf[2] == 0x00)) {
             return 0;
         }
-        if((buf[2] == 0x55)  && (buf[3] == 0x11)) {
+        if((buf[3] == 0x55)  && (buf[2] == 0x11)) {
             return 1;
         }
-        if((buf[2] == 0x55)  && (buf[3] == 0x22)) {
+        if((buf[3] == 0x55)  && (buf[2] == 0x22)) {
             return 2;
         }
     }
