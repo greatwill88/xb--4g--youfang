@@ -159,8 +159,11 @@ void handle_Net_Cmd(char *buf) {
 
     i = IsRelay_Cmd(buf);
     nwy_ext_echo(" \r\nHandle--Net_Cmd==%s", buf);
+
+
     if(i >=0) {
-        nwy_ext_echo(" \r\nNet_Cmd==%d", i);
+        nwy_ext_echo(" \r\nNet_Cmd==%d", i);    
+        Waiting_Mqtt(fg_Snding_485);
         nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);    
         return ;
     }

@@ -195,6 +195,7 @@ void nwy_paho_cycle(void)
 
 char mqtt_report_Msg[MSG_REPLY_LEN];
 int mqtt_report_Len;
+uint8_t volatile Fg_Snding_Mqtt = 0;
 void mqtt_Snd_Thread(void)
 {
   static int cnt = 0;
@@ -212,6 +213,8 @@ void mqtt_Snd_Thread(void)
       Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
       memset(&event, 0 ,sizeof(event));
       nwy_wait_thead_event(nwy_get_current_thread(), &event, 1000);
+      Fg_Snding_Mqtt = 1;
+     
       if(event.id== REPORT_MQTT_MSG) {
         //Open_Pos_Location(1);
         nwy_ext_echo("\r\nReport_Msg-mqtt");
@@ -221,6 +224,9 @@ void mqtt_Snd_Thread(void)
         nwy_ext_echo("\r\nReport_Msg_WG_mqtt_==");
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
       }
+
+      Fg_Snding_Mqtt = 0;
+
 
     }
     nwy_ext_echo("\r\nMQTT disconnect ,Not_Snd");

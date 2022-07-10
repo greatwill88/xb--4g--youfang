@@ -415,6 +415,10 @@ void Generate_Comm(char *msg) {
 
 }
 
+void Generate_OnLine(char *msg) {
+
+}
+
 /////
 void Generate_Report_WG_Info(void) {
     char msg[512];
@@ -434,9 +438,10 @@ void Generate_Report_WG_Info(void) {
    // Str_2_Cat(msg, ",","1");//posiotn,
     Generate_pos(msg);
     //Str_2_Cat(msg, ",","115.112--116.223"); ////gps--position,
-    Generate_Signal(msg,dev_num)
+    Generate_Signal(msg,Dev_Num);
+    Generate_OnLine(msg);
     //Str_2_Cat(msg, ",","5");//num
-    Str_2_Cat(msg, ",","11011");
+   // Str_2_Cat(msg, ",","11011");
 
     strcat(msg, "}");
     

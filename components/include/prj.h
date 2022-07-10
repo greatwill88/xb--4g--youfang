@@ -47,6 +47,8 @@ extern nwy_osiThread_t *g_RS485_Ctrl_thread;
 #define REPORT_MQTT_WG_MSG 0x1137
 
 extern uint8_t Dev_Num;
+extern uint8_t volatile fg_Snding_485;
+extern uint8_t volatile Fg_Snding_Mqtt;
 extern int tcp_connect_flag;
 extern int ppp_state[10];
 extern void nwy_test_cli_ble_open();
@@ -120,6 +122,7 @@ extern char mqtt_report_Msg[MSG_REPLY_LEN];
 extern int mqtt_report_Len;
 extern MQTTClient paho_mqtt_client;
 extern void handle_Net_Cmd(char *buf);
+extern void Waiting_Mqtt(uint8_t signal);
 #ifdef __cplusplus
 }
 #endif

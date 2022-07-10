@@ -857,6 +857,7 @@ void handle_n_Iso(const char *str, uint32_t length )
     nwy_ext_echo("\r\nData_Report==%s",&mqtt_report_Msg[0]); 
     
     //Generate_Report_WG_Info();
+    Waiting_Mqtt(Fg_Snding_Mqtt);
     nwy_ext_send_sig(mqtt_Snd_task_id,EVENT_SND_485_CTRL);
   
 }
@@ -1101,9 +1102,19 @@ void Poll_Addr_Thread(void *param) {
  }
 
 
+void Waiting_Mqtt(uint8_t fg) {
+  nwy_ext_echo("\r\nWait_mqtt_Sing--%x",nwy_get_current_thread());
+  while(fg) {
+    nwy_sleep(100);
+  }  
 
 
 
+
+  nwy_ext_echo("\r\nGet_mqtt_Sing--%x",nwy_get_current_thread());
+}
+
+uint8_t volatile fg_Snding_485 = 0;
  void Rs485_Ctrl_Thread(void *param) {
   uint16_t crc;
   nwy_osiEvent_t event;
@@ -1124,7 +1135,7 @@ void Poll_Addr_Thread(void *param) {
       memset(&event, 0, sizeof(event));
       nwy_wait_thead_event(g_RS485_Ctrl_thread, &event, 200);
 
-      
+      fg_Snding_485 = 1;
       if((event.id == EVENT_SND_485_ALL_ON) || (event.id == EVENT_SND_485_ALL_OFF) || (event.id == EVENT_SND_485_ALL_RS) ||(event.id == EVENT_SND_485_CTRL)  ){
         poll_id = 1;
         while(poll_id <= Dev_Num) {
@@ -1139,7 +1150,7 @@ void Poll_Addr_Thread(void *param) {
           }
        
           poll_id++;
-          nwy_ext_echo("\r\nSnd_Ctrl_Cmd==%,id=%d",RELAY_ALL_ON,poll_id); 
+          nwy_ext_echo("\r\nSnd_Ctrl_Cmd_App_Event==%,id=%d=%d",RELAY_ALL_ON,poll_id,Dev_Num); 
           nwy_sleep(100);
         }
 
@@ -1159,11 +1170,14 @@ void Poll_Addr_Thread(void *param) {
           Generate_Report_WG_Info();
           nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",mqtt_Snd_task_id); 
           Open_Pos_Location(1);
+          Waiting_Mqtt(Fg_Snding_Mqtt);
           nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG);
 
         //  Generate_Report_WG_Info();
         }
       }
+      fg_Snding_485 = 0;
+
 
    }
 
@@ -1178,6 +1192,7 @@ void Poll_Addr_Thread(void *param) {
 
   void snd_key_Event(void) {
   nwy_osiEvent_t event;
-  event.id = EVENT_SND_485_CTRL;
+  event.id = EVENT_SND_485_CTRL;        
+  Waiting_Mqtt(fg_Snding_485);
   nwy_send_thead_event(g_RS485_Ctrl_thread, &event, 0);
   }
