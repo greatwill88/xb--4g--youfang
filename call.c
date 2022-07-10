@@ -761,13 +761,13 @@ void Snd_485_Msg_Uart1(char *msg , int len ) {
 
 
     if(nwy_uart_set_baud(hd,115200)) {
-      nwy_ext_echo("\r\n Snd_485_--115200---chn ===%d", hd);  
+    //  nwy_ext_echo("\r\n Snd_485_--115200---chn ===%d", hd);  
     }
 
     nwy_gpio_set_direction(port,nwy_output);
     value = 1;
     nwy_gpio_set_value(port,value); 
-    nwy_ext_echo("\r\n rs485--Port_id==%d,%d",port,value);
+  //  nwy_ext_echo("\r\n rs485--Port_id==%d,%d",port,value);
     nwy_uart_send_data(hd, (uint8_t *)msg, len);
 
     nwy_sleep(2);
@@ -808,7 +808,7 @@ void Snd_485_Msg_Uart2(char *msg , int len ) {
 
 }
 void Snd_N_ISO_485(char *msg , int len ) {
-  nwy_ext_echo("\r\n Snd_N_ISO_48522");
+ // nwy_ext_echo("\r\n Snd_N_ISO_48522");
   Snd_485_Msg_Uart1(msg , len);  
 }
 
@@ -867,11 +867,13 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
   char id;
 
-  if(length < 2) {
-    return ;  
-  }
+
   crc = N_CRC16(str,length-2);
   nwy_ext_echo("\r\nRs-485-handle--1-crc=%x,length = %d,uart_id = %d",crc,length,hd);
+
+  if((length < 2) ||(length > 100)) {
+    return ;  
+  }
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
     if(thread_Fg == 1){
       id = str[0];
