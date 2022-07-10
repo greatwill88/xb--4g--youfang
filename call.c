@@ -1149,15 +1149,17 @@ uint8_t volatile fg_Snding_485 = 0;
             Snd_Ctrl_Cmd(poll_id, RELAY_ALL_ON);   
           }
        
-          poll_id++;
+          
           nwy_ext_echo("\r\nSnd_Ctrl_Cmd_App_Event==%,id=%d=%d",RELAY_ALL_ON,poll_id,Dev_Num); 
+          poll_id++;
+          if(poll_id < Dev_Num)
           nwy_sleep(100);
         }
 
       } else {
         poll_id++;
         if(poll_id > Dev_Num) {
-          poll_id = 0;
+          poll_id = 1;
         }
         static uint16_t kkk=0;
         kkk++;
