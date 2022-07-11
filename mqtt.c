@@ -141,7 +141,7 @@ void convert_hex_Asc(uint8_t *buf, int len, char *result) {
     } else {
       *result = tmp -10 + 'a';
     }
-    nwy_ext_echo("\r\nChar==%x,%c",i,*result);
+   // nwy_ext_echo("\r\nChar==%x,%c",i,*result);
 
     result++;
 
@@ -152,7 +152,7 @@ void convert_hex_Asc(uint8_t *buf, int len, char *result) {
     } else {
       *result = tmp -10 + 'a';
     }
-    nwy_ext_echo("\r\nChar22==%x,%c",i,*result);
+   // nwy_ext_echo("\r\nChar22==%x,%c",i,*result);
     result++;
   }
 }

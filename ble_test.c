@@ -601,32 +601,37 @@ void Fun_Update_Ble(BLE_ADDRESS *pt ) {
     Find_Ble(pt);
 }
 
+uint8_t BLE_num_Scan = 0;
+nwy_ble_c_scan_dev scan_info[30];
+
 static int nwy_ble_client_scan_dev_func()
 {
-    nwy_ble_c_scan_dev scan_info;
+    //nwy_ble_c_scan_dev scan_info;
 
-    nwy_ble_client_scan_result(&scan_info);
-    Fun_Update_Ble(&scan_info.bdAddress.addr[0]);
+    nwy_ble_client_scan_result(&scan_info[BLE_num_Scan]);
+    Fun_Update_Ble(&scan_info[BLE_num_Scan].bdAddress.addr[0]);
     nwy_ext_echo("\r\nBLE--scan-kk%02x:%02x:%02x:%02x:%02x:%02x,%d,%s,-%ddBm",
-                       scan_info.bdAddress.addr[0],
-                       scan_info.bdAddress.addr[1],
-                       scan_info.bdAddress.addr[2],
-                       scan_info.bdAddress.addr[3],
-                       scan_info.bdAddress.addr[4],
-                       scan_info.bdAddress.addr[5],
-                       scan_info.addr_type,
-                       scan_info.name,
-                       scan_info.rssi);
+                       scan_info[BLE_num_Scan].bdAddress.addr[0],
+                       scan_info[BLE_num_Scan].bdAddress.addr[1],
+                       scan_info[BLE_num_Scan].bdAddress.addr[2],
+                       scan_info[BLE_num_Scan].bdAddress.addr[3],
+                       scan_info[BLE_num_Scan].bdAddress.addr[4],
+                       scan_info[BLE_num_Scan].bdAddress.addr[5],
+                       scan_info[BLE_num_Scan].addr_type,
+                       scan_info[BLE_num_Scan].name,
+                       scan_info[BLE_num_Scan].rssi);
     if (!scan_sel)
     {
         nwy_ext_echo("\r\nibeacon info:");
         for(int i=0;i<16;i++)
-            nwy_ext_echo("%02x",scan_info.beacon.uuid[i]);
+            nwy_ext_echo("%02x",scan_info[BLE_num_Scan].beacon.uuid[i]);
             nwy_ext_echo("\r\nmajor:%04x->%d,minor:%04x->%d,tx_poer_l:%02x->%d",
-                               scan_info.beacon.major,scan_info.beacon.major,
-                               scan_info.beacon.minor,scan_info.beacon.minor,
-                               scan_info.beacon.tx_power_level,scan_info.beacon.tx_power_level);
+                               scan_info[BLE_num_Scan].beacon.major,scan_info[BLE_num_Scan].beacon.major,
+                               scan_info[BLE_num_Scan].beacon.minor,scan_info[BLE_num_Scan].beacon.minor,
+                               scan_info[BLE_num_Scan].beacon.tx_power_level,scan_info[BLE_num_Scan].beacon.tx_power_level);
     }
+    if(BLE_num_Scan < 30)
+        BLE_num_Scan++;
 }
 
 void nwy_test_cli_ble_client_scan()
@@ -703,12 +708,20 @@ void prvThreadEntry_Ble_Call(void *param) {
     if(nwy_ble_client_register_cb(nwy_ble_client_scan_dev_func,BLE_CLIENT_SCAN_DEV))
         nwy_ext_echo("nwy ble client scan dev cb register ok");
     while(1) {
-
+        BLE_num_Scan = 0;
         Update_DeatTime();
-        status = nwy_ble_client_scan(20);
+        nwy_ext_echo("\r\nStart_Scan--ble");
+        status = nwy_ble_client_scan(3);
+        if(status) {
+            nwy_ext_echo("\r\nScan__Success--%d",BLE_num_Scan);    
+        } else {
+             nwy_ext_echo("\r\nScan__Fail--%d",BLE_num_Scan);
+        }
+
         Upate_White_Name();
 
-        nwy_sleep(1000*(BLE_SCAN_PERIOD- 20));
+        nwy_sleep(1000*(BLE_SCAN_PERIOD - 3));
+        nwy_ext_echo("\r\nBle_Scan==%d", BLE_num_Scan);
 
     }
 }

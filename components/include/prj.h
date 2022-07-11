@@ -4,7 +4,7 @@
 #include "nwy_config.h"
 #include "nwy_sim.h"
 #include "MQTTClient.h"
-//#include "nwy_loc.h"
+#include "nwy_ble_client.h"
 
 
 #ifdef __cplusplus
@@ -54,6 +54,10 @@ extern int ppp_state[10];
 extern void nwy_test_cli_ble_open();
 extern void test_hex_Asc(void);
 extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
+extern uint8_t BLE_num_Scan;
+extern nwy_ble_c_scan_dev scan_info[30];
+extern void convert_hex_Asc(uint8_t *buf, int len, char *result);
+extern uint8_t Conver_Asc_Hex(char *buf, uint8_t *result) ;
 //extern nwy_log_cipgsmloc_result_t xb_position;
 
 

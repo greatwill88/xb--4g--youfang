@@ -137,6 +137,10 @@ void prvThreadEntry_Call(void *param)
         nwy_sleep(1000);
         nwy_ext_echo("Call_Thread_Wait == %d", wait);
     }
+
+
+
+    
   start_Ble_Scan_Thread();
     // nwy_test_cli_ble_open();
 

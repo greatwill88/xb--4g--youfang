@@ -350,9 +350,22 @@ void Generate_White_Name(char *msg) {
 }
 
 void Generate_All_Name(char *msg) {
-    Str_3_Cat(msg, ",","331234567890","-");//all mac
-    Str_2_Cat(msg,"441234567890","-");//all mac 
-    Str_2_Cat(msg,"551234567890"," ");//all mac 
+    char mac[16];
+    int i;
+
+    if(BLE_num_Scan == 0) return ;
+    for(i = 0; i < BLE_num_Scan;i++){
+        memset(mac,0,12);
+        convert_hex_Asc(scan_info[BLE_num_Scan].bdAddress.addr[0],6,mac);
+        if(i != BLE_num_Scan)
+            Str_3_Cat(msg, ",",mac,"-");
+        else {
+            Str_2_Cat(msg, ",",mac);           
+        }
+        nwy_ext_echo("\r\nmac ==%x,%s",i,mac);
+    } 
+
+
 }
 
 extern nwy_log_cipgsmloc_result_t xb_position;
