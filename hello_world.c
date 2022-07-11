@@ -5307,7 +5307,7 @@ void nwy_cipgsmloc_cb(char *text)
 {
     nwy_log_cipgsmloc_result_t *param = (nwy_log_cipgsmloc_result_t *)text;
     if(NULL == param) return;
-    nwy_ext_echo("\r\n cipgsmloc info\r\n");
+/*     nwy_ext_echo("\r\n cipgsmloc info\r\n");
     if(0 == param->result)
     {
         nwy_ext_echo("lat %lf \r\n", param->info.data.lat);
@@ -5317,7 +5317,7 @@ void nwy_cipgsmloc_cb(char *text)
     else
     {
         nwy_ext_echo(" %s\r\n", param->info.errmsg);
-    }
+    } */
     return ;
 }
 
@@ -9145,7 +9145,7 @@ g_app_thread = nwy_create_thread("mythread", prvThreadEntry, NULL, NWY_OSI_PRIOR
     g_app_thread = nwy_create_thread("mythread", prvThreadEntry_Get_Value, NULL, NWY_OSI_PRIORITY_NORMAL, 1024*2, 16);
      start_Call_Thread();
   //  start_Ble_Scan_Thread();
-  //  Start_Poll_Addr_Thread();
+    Start_Poll_Addr_Thread();
   //  Start_Key_Thread();
 
   //  g_timer_XB = nwy_timer_init(g_app_thread, nwy_app_timer_xb, NULL);

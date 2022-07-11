@@ -353,6 +353,8 @@ void Generate_All_Name(char *msg) {
     char mac[16];
     int i;
 
+    nwy_ext_echo("\r\nAll_White_Name:==");   
+     return ;
     if(BLE_num_Scan == 0) return ;
     for(i = 0; i < BLE_num_Scan;i++){
         memset(mac,0,12);
@@ -434,7 +436,7 @@ void Generate_OnLine(char *msg) {
 
 /////
 void Generate_Report_WG_Info(void) {
-    char msg[512];
+    char msg[1024];
     char temp[32];
     uint8_t csq_val;
 
