@@ -130,6 +130,98 @@ void Gernerate_Topic_Rec_Cmd(char *topic,int len) {
 }
 
 
+void convert_hex_Asc(uint8_t *buf, int len, char *result) {
+  int i = 0;
+  uint8_t tmp;
+  for(i = 0; i< len; i++) {
+    tmp = *(buf+i) & 0xF0;
+    tmp >>= 4;
+    if((tmp >=0) && (tmp <= 9)) {
+      *result = tmp + '0';
+    } else {
+      *result = tmp -10 + 'a';
+    }
+    nwy_ext_echo("\r\nChar==%x,%c",i,*result);
+
+    result++;
+
+
+    tmp = *(buf+i) & 0x0F;
+    if((tmp >=0) && (tmp <= 9)) {
+      *result = tmp + '0';
+    } else {
+      *result = tmp -10 + 'a';
+    }
+    nwy_ext_echo("\r\nChar22==%x,%c",i,*result);
+    result++;
+  }
+}
+
+
+uint8_t Conver_Asc_Hex(char *buf, uint8_t *result) {
+  int len ;
+  int i,j;
+  len = strlen(buf);
+
+  if(len % 2) return 0;
+  nwy_ext_echo("\r\nChar33==%x",len);
+
+
+  for(i = 0; i< len; i++) {
+      if(((*buf) >= '0')  && (*buf <= '9'))
+        continue ;
+      else if(((*buf) >= 'a')  && (*buf <= 'f')) {
+         continue ;  
+      } else if(((*buf) >= 'A')  && (*buf <= 'F')) {
+         continue ;  
+      } else 
+        return 0;
+  }
+  uint8_t tmp;
+  for(j=0; j< len; j+=2 ) {
+    for(i= 0;i<2;i++) {
+      if((*(buf+i+j) >= '0') && (*(buf+i+j) <= '9')) {
+        tmp = *(buf+i+j)- '0';
+      } else if((*(buf+i+j) >= 'a') && (*(buf+i+j) <= 'f')) {
+        tmp = *(buf+i+j)- 'a' + 10;
+      }else if((*(buf+i+j) >= 'A') && (*(buf+i+j) <= 'F')) {
+        tmp = *(buf+i+j)- 'A' + 10;
+      }
+      if(i == 0) *(result+j/2) = tmp *16;
+      else *(result+j/2) +=tmp;
+    }
+    nwy_ext_echo("\r\nChar33==%x,%x",j,*(result+j/2));
+  }
+
+
+
+}
+
+
+void test_hex_Asc(void) {
+
+    uint8_t hex_buf[16] = {0xAb,0x22,0x13,0x33,0x31,0xEF,0x23,0x43,0x4b,0xc2,0xee,0x3f,0x3a,0x8F,0x03,0x9};
+    char result[64];
+    char buf[]="112233445fb6c10faabb1a2b";
+
+    
+    while(1)
+    {
+        memset(result, 0 , 64);
+        convert_hex_Asc(hex_buf,sizeof(hex_buf), result);
+
+        Conver_Asc_Hex(buf,  result);
+        nwy_ext_echo("\r\nResullt==%s",result);
+
+        nwy_sleep(1000);
+
+    }
+    
+
+}
+
+
+
 
 void messageArrived(MessageData* md)
 {

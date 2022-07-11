@@ -52,6 +52,7 @@ extern uint8_t volatile Fg_Snding_Mqtt;
 extern int tcp_connect_flag;
 extern int ppp_state[10];
 extern void nwy_test_cli_ble_open();
+extern void test_hex_Asc(void);
 extern void nwy_test_cli_ble_client_scan_Para(char *scan_TTT,char *scan_type);
 //extern nwy_log_cipgsmloc_result_t xb_position;
 
