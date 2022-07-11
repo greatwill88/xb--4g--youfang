@@ -354,13 +354,14 @@ void Generate_All_Name(char *msg) {
     int i;
 
     nwy_ext_echo("\r\nAll_White_Name:==");   
-     return ;
+    // return ;
     if(BLE_num_Scan == 0) return ;
+    strcat(msg,",");
     for(i = 0; i < BLE_num_Scan;i++){
-        memset(mac,0,12);
-        convert_hex_Asc(scan_info[BLE_num_Scan].bdAddress.addr[0],6,mac);
-        if(i != BLE_num_Scan)
-            Str_3_Cat(msg, ",",mac,"-");
+        memset(mac,0,sizeof(mac));
+        convert_hex_Asc(&scan_info[i].bdAddress.addr[0],6,mac);
+        if(i <= (BLE_num_Scan - 1))
+            Str_2_Cat(msg, mac,"-");
         else {
             Str_2_Cat(msg, ",",mac);           
         }
