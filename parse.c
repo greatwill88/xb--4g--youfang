@@ -151,6 +151,22 @@ int IsRelay_Cmd(char *msg)
     return -1;
 }
 
+void Reply_Zone(char *msg, uint16_t value,uint8_t zone) {
+    memset(msg, 0 ,sizeof(mqtt_report_Msg));
+    strcat(msg,"result");
+    if(zone == 0)
+        strcat(msg,"0:");
+    else if(zone == 1)
+        strcat(msg,"1:");
+    char tmp_buf[8];
+    uint8_t result[2];
+    result[0] = value >> 8;
+    result[1] = value & 0xff;    
+    memset(tmp_buf, 0 , 8);
+    convert_hex_Asc(result,2, tmp_buf);              
+    strcat(msg,tmp_buf);
+}
+
 void handle_Net_Cmd(char *buf) {
     char *pt;
     pt = buf;
@@ -183,21 +199,10 @@ void handle_Net_Cmd(char *buf) {
                  tmp = Result[0];
                  tmp <<= 8;
                  tmp +=  Result[1];
-                  memset(mqtt_report_Msg, 0 ,sizeof(mqtt_report_Msg));
-                 strcat(mqtt_report_Msg,"result");
+
                  if(zone_num == '0') {
                     value_zone_0 = tmp;
-                    strcat(mqtt_report_Msg,"0:");
-
-                    char tmp_buf[8];
-                    uint8_t result[2];
-                    result[0] = value_zone_0 >> 8;
-                    result[1] = value_zone_0 & 0xff;    
-                    memset(tmp_buf, 0 , 8);
-                    convert_hex_Asc(result,2, tmp_buf);              
-                    strcat(mqtt_report_Msg,tmp_buf);
-
-
+                    Reply_Zone(mqtt_report_Msg,value_zone_0, 0); 
                     nwy_ext_echo(" \r\nValue0===%x",value_zone_0);
                  } else if(zone_num == '2') {
                     strcat(mqtt_report_Msg,"2:");
@@ -216,9 +221,11 @@ void handle_Net_Cmd(char *buf) {
     } else if(strstr(pt,"getzone")){
         pt += strlen("getzone");
         if(*pt =='0') {
-
+            Reply_Zone(mqtt_report_Msg,value_zone_0,0);
+        } else if(*pt =='1') {
+            Reply_Zone(mqtt_report_Msg,value_zone_1,1);
         }
-
+        nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }else if(strstr(pt,"cloud=?")) {
        Reply_Cloud_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
 
