@@ -321,6 +321,19 @@ void mqtt_Snd_Thread(void)
       }else if(REPORT_MQTT_CTRL_CMD == event.id) {
         nwy_ext_echo("\r\nReply_Mqtt_Ctrl_Cmd==");
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+      } else {
+        static uint8_t num = 0;
+
+          if(num < 5) {
+            num++;
+            Generate_Report_WG_Info();
+            nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",num); 
+            Open_Pos_Location(1);
+            Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+           // Waiting_Mqtt(Fg_Snding_Mqtt);
+           //nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG);
+          }
+
       }
 
 
@@ -348,7 +361,7 @@ nwy_osiThread_t * nwy_paho_yeild_task_init(void)
     nwy_paho_task_id = task_id;
 
     mqtt_Snd_task_id = nwy_create_thread("Mqtt_Snd_task",mqtt_Snd_Thread,
-                   NULL, NWY_OSI_PRIORITY_NORMAL,1024*2,4);
+                   NULL, NWY_OSI_PRIORITY_NORMAL,1024*5,4);
 
   }
   else

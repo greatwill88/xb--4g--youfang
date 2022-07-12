@@ -774,7 +774,9 @@ void Snd_485_Msg_Uart1(char *msg , int len ) {
   //  nwy_ext_echo("\r\n rs485--Port_id==%d,%d",port,value);
     nwy_uart_send_data(hd, (uint8_t *)msg, len);
 
-    nwy_sleep(2);
+    //nwy_ext_echo("\r\nSnd--485--1");
+    nwy_usleep(1000 * (1 + len/10));
+   // nwy_ext_echo("\r\nSnd--485--3333");
 
     nwy_gpio_set_direction(port,nwy_output);
     value = 0;
@@ -1125,7 +1127,7 @@ uint8_t volatile fg_Snding_485 = 0;
   uint16_t crc;
   nwy_osiEvent_t event;
 
-
+  
    while(1) {
       thread_Fg = 2;
       poll_Ctrl_Cmd[0] = poll_id;
@@ -1143,24 +1145,25 @@ uint8_t volatile fg_Snding_485 = 0;
 
       fg_Snding_485 = 1;
       if((event.id == EVENT_SND_485_ALL_ON) || (event.id == EVENT_SND_485_ALL_OFF) || (event.id == EVENT_SND_485_ALL_RS) ||(event.id == EVENT_SND_485_CTRL)  ){
-        poll_id = 1;
-        while(poll_id <= Dev_Num) {
+        int id_tmp = 1;
+        while(id_tmp <= Dev_Num) {
           if(event.id == EVENT_SND_485_ALL_ON)
-            Snd_Ctrl_Cmd(poll_id, RELAY_ALL_ON);
+            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_ON);
           else if(event.id == EVENT_SND_485_ALL_OFF)
-            Snd_Ctrl_Cmd(poll_id, RELAY_ALL_OFF);
+            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_OFF);
           else if(event.id == EVENT_SND_485_ALL_RS)
-            Snd_Ctrl_Cmd(poll_id, RELAY_ALL_RS);
+            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_RS);
           else if(event.id == EVENT_SND_485_CTRL) {
-            Snd_Ctrl_Cmd(poll_id, RELAY_ALL_ON);   
+            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_ON);   
           }
        
           
-          nwy_ext_echo("\r\nSnd_Ctrl_Cmd_App_Event==%,id=%d=%d",RELAY_ALL_ON,poll_id,Dev_Num); 
-          poll_id++;
-          if(poll_id < Dev_Num)
+          nwy_ext_echo("\r\nSnd_Ctrl_Cmd_App_Event==%,id=%d=%d",RELAY_ALL_ON,id_tmp,Dev_Num); 
+          id_tmp++;
+          if(id_tmp < Dev_Num)
           nwy_sleep(100);
         }
+    
 
       } else {
         poll_id++;
@@ -1172,17 +1175,6 @@ uint8_t volatile fg_Snding_485 = 0;
 
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
 
-        //kkk = 0;
-        if(kkk > 5* 2) {
-          kkk = 0;
-          Generate_Report_WG_Info();
-          nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",mqtt_Snd_task_id); 
-          Open_Pos_Location(1);
-          Waiting_Mqtt(Fg_Snding_Mqtt);
-          nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG);
-
-        //  Generate_Report_WG_Info();
-        }
       }
       fg_Snding_485 = 0;
 

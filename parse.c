@@ -180,9 +180,9 @@ void handle_Net_Cmd(char *buf) {
                     nwy_ext_echo("%x-",Result[i]);                     
                  } 
                  uint16_t tmp;
-                 tmp = Result[1];
+                 tmp = Result[0];
                  tmp <<= 8;
-                 tmp +=  Result[0];
+                 tmp +=  Result[1];
                   memset(mqtt_report_Msg, 0 ,sizeof(mqtt_report_Msg));
                  strcat(mqtt_report_Msg,"result");
                  if(zone_num == '0') {
@@ -202,10 +202,10 @@ void handle_Net_Cmd(char *buf) {
                  } else if(zone_num == '2') {
                     strcat(mqtt_report_Msg,"2:");
                      int i = 0;
-                     if(tmp == 0x0055) {i = 0;}
-                     else  if(tmp == 0x1155) {i = 1;}
-                     else  if(tmp == 0x2255) {i = 2;}
-                    Waiting_Mqtt(fg_Snding_485);
+                     if(tmp == 0x5500) {i = 0;}
+                     else  if(tmp == 0x5511) {i = 1;}
+                     else  if(tmp == 0x5522) {i = 2;}
+                     Waiting_Mqtt(fg_Snding_485);
                     nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);                     
                  }
 
@@ -238,7 +238,7 @@ static void nwy_cipgsmloc_cb(char *text)
 {
     nwy_log_cipgsmloc_result_t *param = (nwy_log_cipgsmloc_result_t *)text;
     if(NULL == param) return;
-    nwy_ext_echo("\r\n cipgsmloc info\r\n");
+/*     nwy_ext_echo("\r\n cipgsmloc info\r\n");
     if(0 == param->result)
     {
         nwy_ext_echo("lat %lf \r\n", param->info.data.lat);
@@ -248,7 +248,7 @@ static void nwy_cipgsmloc_cb(char *text)
     else
     {
         nwy_ext_echo(" %s\r\n", param->info.errmsg);
-    }
+    } */
 
     memcpy(&xb_position, param, sizeof(xb_position));
 
@@ -276,9 +276,9 @@ void Open_Pos_Location(bool fg_On_Off ) {
 	    	//nwy_ext_virtual_at_test();
 		}
 
-		nwy_sleep(50);
+		//nwy_sleep(50);
 
-	  //  nwy_ext_echo("\r\n lbs_mode:%d", 1);
+	   nwy_ext_echo("\r\n lbs_mode:%d", 1);
 
 		nwy_loc_get_lbs_info(&databuf);
 	//	nwy_ext_echo("\r\n cell_id:%d lac:%d mcc:%d mnc:%d csq:%d imei:%s",databuf.cell_id,databuf.lac,databuf.mcc,databuf.mnc,
