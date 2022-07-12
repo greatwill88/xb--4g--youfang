@@ -155,20 +155,71 @@ void handle_Net_Cmd(char *buf) {
     char *pt;
     pt = buf;
 
-    int i = 0;
 
-    i = IsRelay_Cmd(buf);
+
+
+
     nwy_ext_echo(" \r\nHandle--Net_Cmd==%s", buf);
 
+    if(strstr(pt,"setzone")){
+        pt += strlen("setzone");
+        uint8_t zone_num = 0;
+        zone_num = *pt;
+        if((zone_num =='0') ||(zone_num =='2')) {
+            //pt++;
+            //pt++;
+            pt += strlen("0-");
+            char cmd[10];
+            uint8_t Result[5];
+            memset(cmd, 0 , sizeof(cmd));
+            memset(Result, 0 , sizeof(Result));
+            memcpy(cmd, pt, 4);
+            if(Conver_Asc_Hex(cmd,Result)) {
+                 nwy_ext_echo(" \r\nZone0--Net_Cmd");
+                 for(int i = 0; i< 5;i++) {
+                    nwy_ext_echo("%x-",Result[i]);                     
+                 } 
+                 uint16_t tmp;
+                 tmp = Result[1];
+                 tmp <<= 8;
+                 tmp +=  Result[0];
+                  memset(mqtt_report_Msg, 0 ,sizeof(mqtt_report_Msg));
+                 strcat(mqtt_report_Msg,"result");
+                 if(zone_num == '0') {
+                    value_zone_0 = tmp;
+                    strcat(mqtt_report_Msg,"0:");
 
-    if(i >=0) {
-        nwy_ext_echo(" \r\nNet_Cmd==%d", i);    
-        Waiting_Mqtt(fg_Snding_485);
-        nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);    
-        return ;
-    }
+                    char tmp_buf[8];
+                    uint8_t result[2];
+                    result[0] = value_zone_0 >> 8;
+                    result[1] = value_zone_0 & 0xff;    
+                    memset(tmp_buf, 0 , 8);
+                    convert_hex_Asc(result,2, tmp_buf);              
+                    strcat(mqtt_report_Msg,tmp_buf);
 
-    if(strstr(pt,"cloud=?")) {
+
+                    nwy_ext_echo(" \r\nValue0===%x",value_zone_0);
+                 } else if(zone_num == '2') {
+                    strcat(mqtt_report_Msg,"2:");
+                     int i = 0;
+                     if(tmp == 0x0055) {i = 0;}
+                     else  if(tmp == 0x1155) {i = 1;}
+                     else  if(tmp == 0x2255) {i = 2;}
+                    Waiting_Mqtt(fg_Snding_485);
+                    nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);                     
+                 }
+
+                 nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);             
+
+            }
+        }
+    } else if(strstr(pt,"getzone")){
+        pt += strlen("getzone");
+        if(*pt =='0') {
+
+        }
+
+    }else if(strstr(pt,"cloud=?")) {
        Reply_Cloud_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
 
     } else if(strstr(pt,"restart")) {

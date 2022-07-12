@@ -36,16 +36,16 @@ extern "C" {
 
 extern nwy_osiThread_t *mqtt_Snd_task_id;
 extern nwy_osiThread_t *g_RS485_Ctrl_thread;
-
+extern uint16_t value_zone_1,value_zone_0;
 #define EVENT_SND_485_CTRL 0x1122
 
 #define EVENT_SND_485_ALL_ON 0x1132
 #define EVENT_SND_485_ALL_OFF 0x1133
 #define EVENT_SND_485_ALL_RS  0x1135
 
-#define REPORT_MQTT_MSG 0x1136
-#define REPORT_MQTT_WG_MSG 0x1137
-
+#define REPORT_MQTT_MSG      0x1136
+#define REPORT_MQTT_WG_MSG   0x1137
+#define REPORT_MQTT_CTRL_CMD 0x1138
 extern uint8_t Dev_Num;
 extern uint8_t volatile fg_Snding_485;
 extern uint8_t volatile Fg_Snding_Mqtt;

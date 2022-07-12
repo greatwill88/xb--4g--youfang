@@ -76,9 +76,11 @@ float voltage_Xb;
 
 static nwy_osiTimer_t   *s_nwy_test_timer = NULL;
 nwy_osiThread_t *g_Key_thread;
-uint16_t value_zone_0 = 0xff;
+uint16_t value_zone_0 = (0xffff & (~(0x01 << 9)));
 uint16_t value_zone_1 = 0x58;
 float voltage_Input = 220.5;
+
+
 
 
 /* void nwy_app_timer_xb(void)
@@ -353,7 +355,9 @@ void Generate_All_Name(char *msg) {
     char mac[16];
     int i;
 
-    nwy_ext_echo("\r\nAll_White_Name:==");   
+    nwy_ext_echo("\r\nAll_White_Name:==");  
+    if((value_zone_0 & (0x01 << 9)) ==0)  return ;
+    
     // return ;
     if(BLE_num_Scan == 0) return ;
     strcat(msg,",");
@@ -427,7 +431,10 @@ void Generate_Comm(char *msg) {
     Generate_Tempera(msg,voltage_Input);
 
     Generate_White_Name(msg);
-    Generate_All_Name(msg);   
+
+
+    Generate_All_Name(msg);
+
 
 }
 

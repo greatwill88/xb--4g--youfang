@@ -192,6 +192,7 @@ uint8_t Conver_Asc_Hex(char *buf, uint8_t *result) {
     }
     nwy_ext_echo("\r\nChar33==%x,%x",j,*(result+j/2));
   }
+  return 1 ;
 
 
 
@@ -288,12 +289,14 @@ void nwy_paho_cycle(void)
 char mqtt_report_Msg[MSG_REPLY_LEN];
 int mqtt_report_Len;
 uint8_t volatile Fg_Snding_Mqtt = 0;
+
+nwy_osiSemaphore_t *xb_Mqtt_Snd_Sig;
 void mqtt_Snd_Thread(void)
 {
   static int cnt = 0;
   char buf[128];
   char snd_topic[64];
-
+  xb_Mqtt_Snd_Sig = nwy_semaphore_create(1, 1);
 
   while(1)
   {
@@ -305,7 +308,7 @@ void mqtt_Snd_Thread(void)
       Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));
       memset(&event, 0 ,sizeof(event));
       nwy_wait_thead_event(nwy_get_current_thread(), &event, 1000);
-      Fg_Snding_Mqtt = 1;
+   //   Fg_Snding_Mqtt = 1;
      
       if(event.id== REPORT_MQTT_MSG) {
         //Open_Pos_Location(1);
@@ -315,7 +318,13 @@ void mqtt_Snd_Thread(void)
       } else if(REPORT_MQTT_WG_MSG == event.id) {
         nwy_ext_echo("\r\nReport_Msg_WG_mqtt_==");
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+      }else if(REPORT_MQTT_CTRL_CMD == event.id) {
+        nwy_ext_echo("\r\nReply_Mqtt_Ctrl_Cmd==");
+        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
       }
+
+
+
 
       Fg_Snding_Mqtt = 0;
 
@@ -691,8 +700,13 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
   }
 }
 
+
+
 int Snd_Mqtt(char *topic,char *qos, char *retain,char *msg) {
+
+  nwy_semaphore_acquire(xb_Mqtt_Snd_Sig,0);
   nwy_paho_mqtt_test_mine(2, topic, qos, retain ,msg, NULL ,NULL);
+  nwy_semahpore_release(xb_Mqtt_Snd_Sig);
 }
 
 

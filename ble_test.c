@@ -610,7 +610,7 @@ static int nwy_ble_client_scan_dev_func()
 
     nwy_ble_client_scan_result(&scan_info[BLE_num_Scan]);
     Fun_Update_Ble(&scan_info[BLE_num_Scan].bdAddress.addr[0]);
-    nwy_ext_echo("\r\nBLE--scan-kk%02x:%02x:%02x:%02x:%02x:%02x,%d,%s,-%ddBm",
+/*     nwy_ext_echo("\r\nBLE--scan-kk%02x:%02x:%02x:%02x:%02x:%02x,%d,%s,-%ddBm",
                        scan_info[BLE_num_Scan].bdAddress.addr[0],
                        scan_info[BLE_num_Scan].bdAddress.addr[1],
                        scan_info[BLE_num_Scan].bdAddress.addr[2],
@@ -629,7 +629,8 @@ static int nwy_ble_client_scan_dev_func()
                                scan_info[BLE_num_Scan].beacon.major,scan_info[BLE_num_Scan].beacon.major,
                                scan_info[BLE_num_Scan].beacon.minor,scan_info[BLE_num_Scan].beacon.minor,
                                scan_info[BLE_num_Scan].beacon.tx_power_level,scan_info[BLE_num_Scan].beacon.tx_power_level);
-    }
+    } */
+
     if(BLE_num_Scan < 30)
         BLE_num_Scan++;
 }
