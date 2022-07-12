@@ -227,14 +227,17 @@ void handle_Net_Cmd(char *buf) {
         }
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }else if(strstr(pt,"cloud=?")) {
+        nwy_ext_echo(" \r\nCloud_Cmd==Query");
        Reply_Cloud_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
-
+       nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     } else if(strstr(pt,"restart")) {
         Reply_Restart(mqtt_report_Msg, MSG_REPLY_LEN);
+        nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }  else if((strstr(pt,"\"cmd\": \"sets\","))) {
         pt += strlen("\"cmd\": \"sets\",");
         Handle_Set_Cmd(pt);
         Reply_Set_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
+        nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }
 
 

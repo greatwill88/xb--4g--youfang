@@ -68,6 +68,7 @@
 #endif
 
 #include "prj.h"
+#include "unistd.h"
 #include "nwy_test_cli_func_def.h"
 
 
@@ -775,7 +776,8 @@ void Snd_485_Msg_Uart1(char *msg , int len ) {
     nwy_uart_send_data(hd, (uint8_t *)msg, len);
 
     //nwy_ext_echo("\r\nSnd--485--1");
-    nwy_usleep(1000 * (1 + len/10));
+   // nwy_usleep(1000 * (1 + len/10));
+      nwy_usleep(1000 * (1 + len/10));
    // nwy_ext_echo("\r\nSnd--485--3333");
 
     nwy_gpio_set_direction(port,nwy_output);

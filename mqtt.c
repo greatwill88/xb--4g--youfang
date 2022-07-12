@@ -343,8 +343,8 @@ void mqtt_Snd_Thread(void)
 
 
     }
-    nwy_ext_echo("\r\nMQTT disconnect ,Not_Snd");
-    nwy_suspend_thread(mqtt_Snd_task_id);
+   // nwy_ext_echo("\r\nMQTT disconnect ,Not_Snd");
+   // nwy_suspend_thread(mqtt_Snd_task_id);
     cnt = 0;
   }
   nwy_sleep(200);
