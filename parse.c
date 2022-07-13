@@ -167,17 +167,26 @@ void Reply_Zone(char *msg, uint16_t value,uint8_t zone) {
     strcat(msg,tmp_buf);
 }
 
-void handle_Net_Cmd(char *buf) {
+void handle_Net_Cmd(char *buf , int len) {
     char *pt;
     pt = buf;
+    nwy_ext_echo(" \r\nHandle--Net_Cmd=");
+    for(int i = 0;i <len ;i++) {
+        nwy_ext_echo("%x-",buf[i]);
+    }
+
+
+    if(buf[0] == 0){
+        if(buf[1] == 0x01) {
+            
+        }
+    }
 
 
 
 
 
-    nwy_ext_echo(" \r\nHandle--Net_Cmd==%s", buf);
-
-    if(strstr(pt,"setzone")){
+/*     if(strstr(pt,"setzone")){
         pt += strlen("setzone");
         uint8_t zone_num = 0;
         zone_num = *pt;
@@ -238,7 +247,7 @@ void handle_Net_Cmd(char *buf) {
         Handle_Set_Cmd(pt);
         Reply_Set_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
-    }
+    } */
 
 
 }

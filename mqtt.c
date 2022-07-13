@@ -257,7 +257,7 @@ void messageArrived(MessageData* md)
     nwy_ext_echo("\r\npayLoad--33====");
     nwy_ext_echo(echo_buff);
     nwy_ext_echo("\r\npayLoad--44====");
-    handle_Net_Cmd(echo_buff);
+    handle_Net_Cmd(echo_buff, md->message->payloadlen);
 
   }
   nwy_unlock_mutex(ext_mutex);
@@ -314,13 +314,13 @@ void mqtt_Snd_Thread(void)
         //Open_Pos_Location(1);
         nwy_ext_echo("\r\nReport_Msg-mqtt");
         //Gernerate_Topic_ctrl(snd_topic,sizeof(snd_topic));        
-        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
       } else if(REPORT_MQTT_WG_MSG == event.id) {
         nwy_ext_echo("\r\nReport_Msg_WG_mqtt_==");
-        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
       }else if(REPORT_MQTT_CTRL_CMD == event.id) {
         nwy_ext_echo("\r\nReply_Mqtt_Ctrl_Cmd==");
-        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+        Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
       } else {
         static uint8_t num = 0;
 
@@ -329,7 +329,7 @@ void mqtt_Snd_Thread(void)
             Generate_Report_WG_Info();
             nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",num); 
             Open_Pos_Location(1);
-            Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg);
+            Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
            // Waiting_Mqtt(Fg_Snding_Mqtt);
            //nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG);
           }
@@ -369,7 +369,7 @@ nwy_osiThread_t * nwy_paho_yeild_task_init(void)
   return nwy_paho_task_id;
 }
 
-void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,char *para4, char *para5 ,char *para6)
+void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,char *para4, char *para5 ,char *para6,int leng_mqtt)
 {
   char* sptr = nwy_ext_sio_recv_buff;
   MQTTPacket_connectData* options;
@@ -590,7 +590,9 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
             }
 #endif
             sptr = para4;
-            strncpy(paho_mqtt_at_param.message, sptr, strlen(sptr));
+            
+           // strncpy(paho_mqtt_at_param.message, sptr, strlen(sptr));
+           strncpy(paho_mqtt_at_param.message, sptr, leng_mqtt);
             nwy_ext_echo("\r\nmqttpub param retained = %d, qos = %d, topic = %s, msg = %s",
 	                          paho_mqtt_at_param.retained,
 	                          paho_mqtt_at_param.qos,
@@ -598,7 +600,7 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
 	                          paho_mqtt_at_param.message);
 	        memset(&pubmsg, 0, sizeof(pubmsg));
             pubmsg.payload =(void *)paho_mqtt_at_param.message;
-            pubmsg.payloadlen = strlen(paho_mqtt_at_param.message);
+            pubmsg.payloadlen = leng_mqtt;// strlen(paho_mqtt_at_param.message);
             pubmsg.qos = paho_mqtt_at_param.qos;
             pubmsg.retained = paho_mqtt_at_param.retained;
             pubmsg.dup = 0;
@@ -715,17 +717,17 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
 
 
 
-int Snd_Mqtt(char *topic,char *qos, char *retain,char *msg) {
+int Snd_Mqtt(char *topic,char *qos, char *retain,char *msg,int len) {
 
   nwy_semaphore_acquire(xb_Mqtt_Snd_Sig,0);
-  nwy_paho_mqtt_test_mine(2, topic, qos, retain ,msg, NULL ,NULL);
+  nwy_paho_mqtt_test_mine(2, topic, qos, retain ,msg, NULL ,NULL,len);
   nwy_semahpore_release(xb_Mqtt_Snd_Sig);
 }
 
 
 int SubMqtt(char *topic,char *qos) {
 
-    nwy_paho_mqtt_test_mine(3, topic, qos, NULL ,NULL, NULL ,NULL);
+    nwy_paho_mqtt_test_mine(3, topic, qos, NULL ,NULL, NULL ,NULL,0);
 }
 
  void prvThreadEntry_xb_Connect(void *param) {
@@ -733,8 +735,8 @@ int SubMqtt(char *topic,char *qos) {
    char xb_timezone;
 
 #if 1
-  //char ip_addr[]="183.6.101.117";
-   //char port_Num[]="1882";
+//  char ip_addr[]="183.6.101.117";
+ //  char port_Num[]="1882";
 char ip_addr[]="58.248.1.165";////new
 char port_Num[]="1883";////New
 
@@ -783,7 +785,7 @@ char port_Num[]="1883";////New
 
             Generate_Client_id(Client_ID,sizeof(Client_ID));
 
-            nwy_paho_mqtt_test_mine(1, ip_addr, port_Num, Client_ID ,User_Name, password ,ssl_Setting);
+            nwy_paho_mqtt_test_mine(1, ip_addr, port_Num, Client_ID ,User_Name, password ,ssl_Setting,0);
 
         }
       

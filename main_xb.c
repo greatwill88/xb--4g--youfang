@@ -509,4 +509,14 @@ void Poll_Report_Zone1(void) {
 }
 
 
+/* 
+if(value >= bake) {
+    if(online)
+        power+= (value - bake);
+    bake = value ;
+} else {
+    bake = value ;    
+}
+ */
+
 

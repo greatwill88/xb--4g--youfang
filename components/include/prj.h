@@ -92,8 +92,8 @@ extern nwy_osiSemaphore_t *s_Call_OK_semaphore;
 extern nwy_osiThread_t *g_app_thread_xb;
 extern int nwy_get_ip_str(char *url_or_ip, char *ip_str, int *isipv6);
 extern void nwy_tcp_test_Mine(int step,char *para1,char *para2,char *para3,char *para4);
-extern void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,char *para4, char *para5 ,char *para6);
-extern int Snd_Mqtt(char *topic,char *qos, char *retain,char *msg);
+extern void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,char *para4, char *para5 ,char *para6,int len);
+extern int Snd_Mqtt(char *topic,char *qos, char *retain,char *msg,int len);
 extern void nwy_tcp_recv_func(void *param);
 extern nwy_osiThread_t *tcp_recv_thread;
 extern int nwy_port_get(char *port_str, int *port);
@@ -126,7 +126,7 @@ extern void Open_Pos_Location(bool fg_On_Off );
 extern char mqtt_report_Msg[MSG_REPLY_LEN];
 extern int mqtt_report_Len;
 extern MQTTClient paho_mqtt_client;
-extern void handle_Net_Cmd(char *buf);
+extern void handle_Net_Cmd(char *buf,int len);
 extern void Waiting_Mqtt(uint8_t signal);
 #ifdef __cplusplus
 }
