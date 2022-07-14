@@ -46,42 +46,57 @@ void Handle_Set_Cmd(char *buf) {
     char *temp;
 
     pt = malloc(len);
+    nwy_ext_echo("\r\nHandle_Set_Cmd==%d,%s",len,buf);
     if(pt) {
         memcpy(pt, buf, len);
-        para = strtok(pt, "\",");
-        if(para == NULL) return ;
+        para = strtok(pt, ",");
+        if(para == NULL) {
+            nwy_ext_echo("\r\nHandle_Set_Cmd--error");
+            return ;
+        }
         do {
-            if(temp =strstr(para, "\"mqttip\": \"") != NULL) {
-                temp += strlen("\"mqttip\": \"");
-                memcpy(Net_Info.mqttip,temp,sizeof(Net_Info.mqttip,temp));
-            } else if(temp =strstr(para, "\"mqttport\": \"") != NULL) {
-                temp += strlen("\"mqttport\": \"");
-                memcpy(Net_Info.mqttport,temp,sizeof(Net_Info.mqttport));
-            } else if(temp =strstr(para, "\"mqttdomain\": \"") != NULL) {
-                temp += strlen("\"mqttdomain\": \"");
+
+            len = strlen(para);
+            para[len -1] = 0;
+            nwy_ext_echo("\r\nPara===%s",para);            
+
+            if((temp =strstr(para, "\"mqttip\":\""))!= NULL) {
+                temp += strlen("\"mqttip\":\"");
+                
+                len = strlen(temp);
+                nwy_ext_echo("\r\nMqtt_Temp===%s,%d",temp,len);
+                memcpy(Net_Info.mqttip,temp,len);
+                nwy_ext_echo("\r\nMqtt--ip==%s", Net_Info.mqttip);
+
+            } else if((temp =strstr(para, "\"mqttport\":\"")) != NULL) {
+                temp += strlen("\"mqttport\":\"");
+                memcpy(Net_Info.mqttport,temp,len);
+                nwy_ext_echo("\r\nmqttport==%s", Net_Info.mqttport);
+            } else if((temp =strstr(para, "\"mqttdomain\":\"")) != NULL) {
+                temp += strlen("\"mqttdomain\":\"");
                 memcpy(Net_Info.domain,temp,sizeof(Net_Info.domain));
-            } else if(temp =strstr(para, "\"mqttuser\": \"") != NULL) {
-                temp += strlen("\"mqttuser\": \"");
+                nwy_ext_echo("\r\ndomain==%s", Net_Info.domain);
+            } else if((temp =strstr(para, "\"mqttuser\":\"")) != NULL) {
+                temp += strlen("\"mqttuser\":\"");
                 memcpy(Net_Info.user,temp,sizeof(Net_Info.user));
-            }else if(temp =strstr(para, "\"mqttpsw\": \"") != NULL) {
-                temp += strlen("\"mqttpsw\": \"");
+                nwy_ext_echo("\r\nuser==%s", Net_Info.user);
+            }else if((temp =strstr(para, "\"mqttpsw\":\"")) != NULL) {
+                temp += strlen("\"mqttpsw\":\"");
                 memcpy(Net_Info.pw,temp,sizeof(Net_Info.pw));
-            }else if(temp =strstr(para, "\"mqtttime\": \"") != NULL) {
-                temp += strlen("\"mqtttime\": \"");
+                nwy_ext_echo("\r\n password==%s", Net_Info.pw);
+            }else if((temp =strstr(para, "\"mqtttime\":\"")) != NULL) {
+                temp += strlen("\"mqtttime\":\"");
                 memcpy(Net_Info.hold_Time,temp,sizeof(Net_Info.hold_Time));
-            }else if(temp =strstr(para, "\"laswill\": \"") != NULL) {
-                temp += strlen("\"laswill\": \"");
+                nwy_ext_echo("\r\n hold_Time==%s", Net_Info.hold_Time);
+            }else if((temp =strstr(para, "\"laswill\":\"")) != NULL) {
+                temp += strlen("\"laswill\":\"");
                 memcpy(Net_Info.lastWill,temp,sizeof(Net_Info.lastWill));
+                nwy_ext_echo("\r\n lastWill==%s", Net_Info.lastWill);
+            } else {
+                nwy_ext_echo("\r\nFound__none");
             }
 // while(para != NULL)
-
-        }while((para = strtok(NULL, "\",")) != NULL);
-
-
-
-
-
-
+        }while((para = strtok(NULL, ",")) != NULL);
 
     }
 
@@ -89,7 +104,7 @@ void Handle_Set_Cmd(char *buf) {
 }
 
 
-void Reply_Cloud_Cmd(char *msg ,int len){
+void Reply_Cloud_Cmd(char *msg ,int len) {
     memset(msg,0 ,len);
     strcat(msg,"\"cmd\": \"cloud\""); 
     Str_3_Cat(msg, "\"sn\":\"XBwg", xb_sim.nImei,"\",");

@@ -871,6 +871,36 @@ void handle_n_Iso(const char *str, uint32_t length )
 }
 
 
+void handle_Iso_Setting(const char *str, uint32_t length ) {
+
+  char buf[MSG_REPLY_LEN];
+  int len ;
+  memset(buf, 0 , MSG_REPLY_LEN);
+  if(strstr(str,"cloud=?")) {
+    nwy_ext_echo(" \r\nCloud_Cmd==Query");
+
+    Reply_Cloud_Cmd(buf, MSG_REPLY_LEN);
+    len = strlen(buf);
+    Snd_OUT_ISO_485(buf , len);
+
+  } else if(strstr(str,"restart")) {
+    Reply_Restart(buf, MSG_REPLY_LEN);
+    len = strlen(buf);
+    Snd_OUT_ISO_485(buf , len);
+  }  else if(strstr(str,"\"cmd\":\"sets\",")) {
+    char *pt;
+    pt = str;
+    pt += strlen("\"cmd\":\"sets\",");
+    len = strlen(pt);
+    Handle_Set_Cmd(pt);
+    Snd_OUT_ISO_485(pt , len);
+  } 
+
+
+
+}
+
+
 void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
   char id;
@@ -879,7 +909,7 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
   crc = N_CRC16(str,length-2);
   nwy_ext_echo("\r\nRs-485-handle--1-crc=%x,length = %d,uart_id = %d",crc,length,hd);
 
-  if((length < 2) ||(length > 100)) {
+  if((length < 2) ||(length > 200)) {
     return ;  
   }
   if(((crc >> 8) == *(str + length -2)) && ((crc & 0x0ff) == *(str + length - 1))) {
@@ -910,7 +940,7 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
     if(hd == 0) {
       handle_n_Iso(str, length);
     } else {
-      
+      handle_Iso_Setting(str, length);
     }
   }
 

@@ -59,6 +59,8 @@ extern uint8_t BLE_num_Scan;
 extern nwy_ble_c_scan_dev scan_info[30];
 extern void convert_hex_Asc(uint8_t *buf, int len, char *result);
 extern uint8_t Conver_Asc_Hex(char *buf, uint8_t *result) ;
+extern void Reply_Cloud_Cmd(char *msg ,int len);
+extern void Handle_Set_Cmd(char *buf);
 //extern nwy_log_cipgsmloc_result_t xb_position;
 
 
