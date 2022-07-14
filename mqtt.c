@@ -730,6 +730,8 @@ int SubMqtt(char *topic,char *qos) {
     nwy_paho_mqtt_test_mine(3, topic, qos, NULL ,NULL, NULL ,NULL,0);
 }
 
+
+
  void prvThreadEntry_xb_Connect(void *param) {
    nwy_time_t xb_time;
    char xb_timezone;
@@ -737,13 +739,13 @@ int SubMqtt(char *topic,char *qos) {
 #if 1
 //  char ip_addr[]="183.6.101.117";
  //  char port_Num[]="1882";
-char ip_addr[]="58.248.1.165";////new
-char port_Num[]="1883";////New
+char ip_addr[16]="58.248.1.165";////new
+char port_Num[8]="1883";////New
 
 
   char Client_ID[64]="test_Xb_iot";
-  char User_Name[]="kuang";
-  char password[]="kuang";
+  char User_Name[32]="kuang";
+  char password[32]="kuang";
   char ssl_Setting[]="0";
 #else
   char ip_addr[]="183.6.101.117";
@@ -755,6 +757,17 @@ char port_Num[]="1883";////New
 #endif 
     static int i = 0;
     char time_buf[32];
+
+  if(Is_Valid_IP(&Net_Info.mqttip[0])) {
+      nwy_ext_echo("\r\nUsed__setting--Value");    
+      memcpy(ip_addr,(&Net_Info.mqttip[0]),16);
+      memcpy(User_Name,(&Net_Info.user[0]),sizeof(User_Name)); 
+      memcpy(password,(&Net_Info.user[0]),sizeof(password));
+      memcpy(port_Num,(&Net_Info.mqttport[0]),sizeof(port_Num));
+      debug_net(&Net_Info);    
+  }
+
+
     while(1) {
 
         xb_Mqtt_Step = 1;

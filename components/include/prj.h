@@ -73,6 +73,20 @@ typedef struct nwy_file_ftp_info_s
   //int length;
   //int file_size;
 }nwy_file_ftp_info_s;
+
+typedef struct {
+    char mqttip[16];
+    char mqttport[8];   
+    char domain[96];
+    char user[32];
+    char pw[32];
+    char hold_Time[8];
+    char lastWill[32];
+} Net_Set_Typedef;
+extern Net_Set_Typedef Net_Info;
+void Test_Add_Net_Info(void);
+void ReadNet_Info(void);
+void debug_net(Net_Set_Typedef *pt);
 typedef enum
 {
   NWY_CUSTOM_IP_TYPE_OR_DNS_NONE = -1,

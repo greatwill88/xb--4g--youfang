@@ -7,15 +7,6 @@
 #include "nwy_wifi.h"
 #include "prj.h"
 #include "nwy_loc.h"
-typedef struct {
-    char mqttip[64];
-    char mqttport[16];   
-    char domain[96];
-    char user[32];
-    char pw[32];
-    char hold_Time[8];
-    char lastWill[32];
-} Net_Set_Typedef;
 
 Net_Set_Typedef Net_Info;
 
@@ -35,6 +26,72 @@ void Reply_Set_Cmd(char *msg,int len){
 
 }
 
+
+void debug_net(Net_Set_Typedef *pt) {
+    nwy_ext_echo("\r\nDEBUG_Mqtt--ip==%s", &pt->mqttip[0]); 
+    nwy_ext_echo("\r\nDEBUG_mqttport==%s", &pt->mqttport[0]); 
+    nwy_ext_echo("\r\nDEBUG_domain==%s", &pt->domain[0]); 
+    nwy_ext_echo("\r\nDEBUG_user==%s", &pt->user[0]);  
+    nwy_ext_echo("\r\n DEBUG_password==%s", &pt->pw[0]);
+    nwy_ext_echo("\r\n DEBUG_hold_Time==%s", &pt->hold_Time[0]);
+    nwy_ext_echo("\r\n DEBUG_lastWill==%s", &pt->lastWill[0]);
+}
+
+
+uint8_t Is_Valid_IP(char *buf) {
+    char *pt = &buf[0];
+    char *para;
+    int len ;
+    uint16_t value; 
+    uint16_t ip1,ip2,ip3,ip4;
+
+    uint8_t i;
+    uint8_t num = 0;
+    for(i = 0 ; i< 16 ;i++) {
+        if(buf[i] == '.') {
+            num ++;
+        } else if(( buf[i] >= '0') && ( buf[i] <= '9')) {
+
+        } else if(buf[i] == 0) {
+            if(i < 7) return 0;
+        } else {
+            return 0;
+        }
+    }
+
+    if(num != 3) return 0;
+
+    ip1 = atoi(strtok(pt,"."));
+    ip2 = atoi(strtok(NULL, "."));
+
+    para = strtok(NULL, ".");
+    ip3 = atoi(strtok(NULL, "."));
+
+    nwy_ext_echo("V123==%d,%d,%d",ip1,ip2,ip3);
+
+    if(ip1 > 255) return 0;
+    if(ip2 > 255) return 0;
+    if(ip3 > 255) return 0;
+
+    return 1;
+
+
+
+}
+
+void test_Is_Valid() {
+
+    while(1) {
+        memcpy(&Net_Info.mqttip[0],"192.168.32.5",sizeof("192.168.32.5"));
+        if(Is_Valid_IP(&Net_Info.mqttip[0])) {
+
+        }
+        nwy_sleep(1000);
+    }
+
+
+
+}
 
 
 
@@ -99,7 +156,12 @@ void Handle_Set_Cmd(char *buf) {
         }while((para = strtok(NULL, ",")) != NULL);
 
     }
-
+    Test_Add_Net_Info();
+    if(Is_Valid_IP(&Net_Info.mqttip[0]) == 0){
+        memset(&Net_Info.mqttip[0],0 , 16);
+        nwy_ext_echo("\r\nError--ip");
+    }
+    nwy_sleep(1000);
 
 }
 

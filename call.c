@@ -140,7 +140,7 @@ void prvThreadEntry_Call(void *param)
     }
 
 
-
+   ReadNet_Info();
     
   start_Ble_Scan_Thread();
     // nwy_test_cli_ble_open();
@@ -887,6 +887,9 @@ void handle_Iso_Setting(const char *str, uint32_t length ) {
     Reply_Restart(buf, MSG_REPLY_LEN);
     len = strlen(buf);
     Snd_OUT_ISO_485(buf , len);
+    nwy_sleep(100);
+    nwy_power_off(2);
+
   }  else if(strstr(str,"\"cmd\":\"sets\",")) {
     char *pt;
     pt = str;

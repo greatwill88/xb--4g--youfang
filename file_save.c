@@ -120,6 +120,31 @@ int add_name(char *name) {
 }
 
 
+void Test_Add_Net_Info(void) {
+    Net_Set_Typedef tmp_read;
+    int ls = nwy_sdk_vfs_ls();
+    int fd = nwy_sdk_fopen("Net_Info_File", NWY_CREAT | NWY_RDWR | NWY_TRUNC);
+
+    int  len = nwy_sdk_fwrite(fd, &Net_Info, sizeof(Net_Info));
+    nwy_ext_echo("\r\nFile--Write--len==%d\r\n",len);
+     nwy_sdk_fclose(fd);
+    fd = nwy_sdk_fopen("Net_Info_File", NWY_RDONLY);
+
+
+    len = nwy_sdk_fread(fd, &tmp_read, sizeof(Net_Info));
+     nwy_sdk_fclose(fd);
+    nwy_ext_echo("\r\nFile--Read--len==%d\r\n",len);
+    debug_net(&tmp_read);   
+}
+
+void ReadNet_Info(void){
+    int fd = nwy_sdk_fopen("Net_Info_File", NWY_RDONLY);
+    int len = nwy_sdk_fread(fd, &Net_Info, sizeof(Net_Info));
+    nwy_sdk_fclose(fd);
+    debug_net(&Net_Info); 
+}
+
+
 int Del_Name(char *name) {
 	int ls = nwy_sdk_vfs_ls();
     char *pt;
