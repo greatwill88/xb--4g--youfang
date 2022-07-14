@@ -22,7 +22,7 @@ Net_Set_Typedef Net_Info;
 
 void Reply_Restart(char *msg,int len){
     memset(msg,0 ,len);
-    Str_3_Cat(msg, "\"sn\":\"XBwg", xb_sim.nImei,"\",");
+    Str_3_Cat(msg, "\"sn\":\"XBWG", xb_sim.nImei,"\",");
     strcat(msg,"\"cmd\": \"restart\"");
 
 }
@@ -107,35 +107,21 @@ void Handle_Set_Cmd(char *buf) {
 void Reply_Cloud_Cmd(char *msg ,int len) {
     memset(msg,0 ,len);
     strcat(msg,"\"cmd\": \"cloud\""); 
-    Str_3_Cat(msg, "\"sn\":\"XBwg", xb_sim.nImei,"\",");
+    Str_3_Cat(msg, "\"sn\":\"XBWG", xb_sim.nImei,"\",");
     Str_3_Cat(msg, "\"mqttip\":\"", Net_Info.mqttip,"\",");
     Str_3_Cat(msg, "\"mqttport\":\"", Net_Info.mqttport,"\",");
     Str_3_Cat(msg, "\"mqttdomain\":\"", Net_Info.domain,"\",");
     Str_3_Cat(msg, "\"mqttuser\":\"", Net_Info.user,"\",");
 
-    Str_3_Cat(msg, "\"mqttpsw\":\"XBwg", Net_Info.pw,"\",");
-    Str_3_Cat(msg, "\"mqtttime\":\"XBwg", Net_Info.hold_Time,"\",");
-    Str_3_Cat(msg, "\"laswill\":\"XBwg", Net_Info.lastWill,"\",");
-    Str_3_Cat(msg, "\"ts\":\"XBwg", "12345678","\",");////TODO,
-    Str_3_Cat(msg, "\"iccid\":\"XBwg", xb_sim.iccid,"\"");
+    Str_3_Cat(msg, "\"mqttpsw\":\"", Net_Info.pw,"\",");
+    Str_3_Cat(msg, "\"mqtttime\":\"", Net_Info.hold_Time,"\",");
+    Str_3_Cat(msg, "\"laswill\":\"", Net_Info.lastWill,"\",");
+    Str_3_Cat(msg, "\"ts\":\":\"", "12345678","\",");////TODO,
+    Str_3_Cat(msg, "\"iccid\":\"", xb_sim.iccid,"\"");
 
 }
 
-/* void Reply_Set_Cmd(char *msg ,int len){
-    memset(msg,0 ,len);
-    strcat(msg,"\"cmd\": \"cloud\""); 
-    Str_3_Cat(msg, "\"sn\":\"XBwg", xb_sim.nImei,"\",");
-    Str_3_Cat(msg, "\"mqttip\":\"", Net_Info.mqttip,"\",");
-    Str_3_Cat(msg, "\"mqttport\":\"", Net_Info.mqttport,"\",");
-    Str_3_Cat(msg, "\"mqttdomain\":\"", Net_Info.domain,"\",");
-    Str_3_Cat(msg, "\"mqttuser\":\"", Net_Info.user,"\",");
 
-    Str_3_Cat(msg, "\"mqttpsw\":\"XBwg", Net_Info.pw,"\",");
-    Str_3_Cat(msg, "\"mqtttime\":\"XBwg", Net_Info.hold_Time,"\",");
-    Str_3_Cat(msg, "\"laswill\":\"XBwg", Net_Info.lastWill,"\",");
-
-}
- */
 
 int IsRelay_Cmd(char *msg)
 {
