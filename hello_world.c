@@ -5776,7 +5776,19 @@ int get_CCID_Fun() {
     memset(&xb_sim , 0, sizeof(nwy_sim_result_type));
 
     nwy_sim_get_imei(&xb_sim);
+    int len;
+
+    len = strlen(&xb_sim.nImei);
+    if(len < 16)
+        xb_sim.nImei[len -1] = 0;
+
+
     result = nwy_sim_get_iccid(&xb_sim);
+    len = strlen(&xb_sim.iccid);
+    if(len < 23)
+        xb_sim.iccid[len -1] = 0;
+
+
    // nwy_sleep(1000);
     result = nwy_sim_get_imsi(&xb_sim);
    // nwy_ext_echo("\r\n iccid:%s, imsi:%s", xb_sim.iccid, xb_sim.imsi);

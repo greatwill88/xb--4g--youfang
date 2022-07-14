@@ -1146,7 +1146,8 @@ uint8_t volatile fg_Snding_485 = 0;
       nwy_wait_thead_event(g_RS485_Ctrl_thread, &event, 200);
 
       fg_Snding_485 = 1;
-      if((event.id == EVENT_SND_485_ALL_ON) || (event.id == EVENT_SND_485_ALL_OFF) || (event.id == EVENT_SND_485_ALL_RS) ||(event.id == EVENT_SND_485_CTRL)  ){
+      if((event.id == EVENT_SND_485_ALL_ON) || (event.id == EVENT_SND_485_ALL_OFF) ||\
+         (event.id == EVENT_SND_485_ALL_RS) ||(event.id == EVENT_SND_485_CTRL)||(event.id == EVENT_SND_485_ALL_CLEAR)   ){
         int id_tmp = 1;
         while(id_tmp <= Dev_Num) {
           if(event.id == EVENT_SND_485_ALL_ON)
@@ -1157,6 +1158,8 @@ uint8_t volatile fg_Snding_485 = 0;
             Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_RS);
           else if(event.id == EVENT_SND_485_CTRL) {
             Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_ON);   
+          }else if(event.id == EVENT_SND_485_ALL_CLEAR) {
+            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_CLEAR);   
           }
        
           

@@ -257,7 +257,7 @@ void messageArrived(MessageData* md)
     nwy_ext_echo("\r\npayLoad--33====");
     nwy_ext_echo(echo_buff);
     nwy_ext_echo("\r\npayLoad--44====");
-    handle_Net_Cmd(echo_buff, md->message->payloadlen);
+    handle_Net_Cmd(md->message->payload, md->message->payloadlen);
 
   }
   nwy_unlock_mutex(ext_mutex);

@@ -13,10 +13,10 @@ extern "C" {
 
 
 //#define TEST_HELLO_WORLD 
-#define RELAY_ALL_ON  0x0055
-#define RELAY_ALL_OFF 0x1155
-#define RELAY_ALL_RS  0x2255
-
+#define RELAY_ALL_ON    0x0055
+#define RELAY_ALL_OFF   0x1155
+#define RELAY_ALL_RS    0x2255
+#define RELAY_ALL_CLEAR  0x3355
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 
 #define MAX_NUM 32
@@ -41,6 +41,7 @@ extern uint16_t value_zone_1,value_zone_0;
 
 #define EVENT_SND_485_ALL_ON 0x1132
 #define EVENT_SND_485_ALL_OFF 0x1133
+#define EVENT_SND_485_ALL_CLEAR 0x1134
 #define EVENT_SND_485_ALL_RS  0x1135
 
 #define REPORT_MQTT_MSG      0x1136

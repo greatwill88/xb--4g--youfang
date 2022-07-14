@@ -167,6 +167,28 @@ void Reply_Zone(char *msg, uint16_t value,uint8_t zone) {
     strcat(msg,tmp_buf);
 }
 
+
+void conver_Crc(uint16_t crc ,uint8_t *buf) {
+
+    buf[0]  = crc >>8;    
+    buf[1] = crc & 0xff;    
+}
+
+void conver_Data(uint16_t crc ,uint8_t *buf) {
+    buf[0]  = value_zone_0 >>8; 
+    buf[1] = value_zone_0 & 0xff;
+   
+}
+
+uint16_t conver_u8_u16(char *buf) {
+    uint16_t tmp;
+    tmp = buf[1];
+    tmp <<= 8;
+    tmp += buf[0];
+
+    return tmp; 
+}
+
 void handle_Net_Cmd(char *buf , int len) {
     char *pt;
     pt = buf;
@@ -178,8 +200,53 @@ void handle_Net_Cmd(char *buf , int len) {
 
     if(buf[0] == 0){
         if(buf[1] == 0x01) {
-            
-        }
+            mqtt_report_Msg[0] = 0x00;
+            mqtt_report_Msg[1] = 0x01;            
+            mqtt_report_Msg[2] = value_zone_0 & 0xff;
+            mqtt_report_Msg[3] = value_zone_0 >>8;
+
+            uint16_t crc;
+            crc = N_CRC16(mqtt_report_Msg,4);
+            conver_Crc(crc ,&mqtt_report_Msg[4]);
+            mqtt_report_Len = 6;
+
+        } else  if(buf[1] == 0x05) {
+            uint16_t tmp;
+            tmp = mqtt_report_Msg[5];
+            tmp <<= 8;
+            tmp +=  mqtt_report_Msg[4];
+
+
+            for(int j = 0; j < 8;j++) {
+              mqtt_report_Msg[j] = buf[j]; 
+            }
+            mqtt_report_Len = 8;
+        } else  if(buf[1] == 0x02) {
+            mqtt_report_Msg[0] = 0x00;
+            mqtt_report_Msg[1] = 0x02;            
+
+            conver_Data(value_zone_1 ,&mqtt_report_Msg[2]);
+            uint16_t crc;
+            crc = N_CRC16(mqtt_report_Msg,4);
+            conver_Crc(crc ,&mqtt_report_Msg[4]);
+            mqtt_report_Len = 6;
+        }  else  if(buf[1] == 0x44) {
+
+            uint16_t cmd = 0; 
+            cmd =conver_u8_u16(&buf[2]); 
+            memcpy(mqtt_report_Msg,buf, 6);     
+            mqtt_report_Len = 6;
+            int i = 0;
+            if(cmd == 0x5500) {i = 0;}
+            else  if(cmd == 0x5511) {i = 1;}
+            else  if(cmd == 0x5522) {i = 2;}
+            else  if(cmd == 0x5533) {i = 3;}
+            Waiting_Mqtt(fg_Snding_485);
+            nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);                     
+          //  nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);           
+
+        } 
+        nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }
 
 
