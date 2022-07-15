@@ -83,6 +83,14 @@ typedef struct {
     char hold_Time[8];
     char lastWill[32];
 } Net_Set_Typedef;
+
+typedef struct {
+  char sn[12];
+  uint16_t No_Ans_Cnt;
+  
+}XB_Sub_Dev_Typedef;
+extern XB_Sub_Dev_Typedef xb_SubDev_SN[32];
+
 extern Net_Set_Typedef Net_Info;
 void Test_Add_Net_Info(void);
 void ReadNet_Info(void);
@@ -94,6 +102,8 @@ typedef enum
   NWY_CUSTOM_IP_TYPE_OR_DNS_IPV6 = 1,
   NWY_CUSTOM_IP_TYPE_OR_DNS_DNS = 2
 }nwy_ip_type_or_dns_enum;
+extern float temp_IC;
+extern float voltage_Xb;
 extern uint8_t thread_Fg;
 extern int nwy_ext_sio_len;
 extern char nwy_ext_sio_recv_buff[NWY_EXT_SIO_RX_MAX + 1];

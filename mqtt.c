@@ -319,11 +319,15 @@ void mqtt_Snd_Thread(void)
         nwy_ext_echo("\r\nReport_Msg_WG_mqtt_==");
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
       }else if(REPORT_MQTT_CTRL_CMD == event.id) {
-        nwy_ext_echo("\r\nReply_Mqtt_Ctrl_Cmd==");
+/*         nwy_ext_echo("\r\nReply_Mqtt_Ctrl_Cmd==");
+        for(int i = 0; i < mqtt_report_Len;i++) {
+          nwy_ext_echo("%x/",mqtt_report_Msg[i]);
+        } */
         Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
       } else {
         static uint8_t num = 0;
-
+        static uint16_t value_zone_0_Last = 0xff;
+  
           if(num < 5) {
             num++;
             Generate_Report_WG_Info();
@@ -332,6 +336,15 @@ void mqtt_Snd_Thread(void)
             Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);
            // Waiting_Mqtt(Fg_Snding_Mqtt);
            //nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_WG_MSG);
+          } else {
+            if(value_zone_0_Last != value_zone_0) {
+              value_zone_0_Last = value_zone_0;            
+              Generate_Report_WG_Info();
+              nwy_ext_echo("\r\nSnd_mqtt_thread_task_id==%x\r\n",num); 
+              Open_Pos_Location(1);
+              Snd_Mqtt(snd_topic,"2", "0",mqtt_report_Msg,mqtt_report_Len);  
+            }
+
           }
 
       }
@@ -592,7 +605,7 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
             sptr = para4;
             
            // strncpy(paho_mqtt_at_param.message, sptr, strlen(sptr));
-           strncpy(paho_mqtt_at_param.message, sptr, leng_mqtt);
+           memcpy(paho_mqtt_at_param.message, sptr, leng_mqtt);
             nwy_ext_echo("\r\nmqttpub param retained = %d, qos = %d, topic = %s, msg = %s",
 	                          paho_mqtt_at_param.retained,
 	                          paho_mqtt_at_param.qos,
@@ -601,6 +614,10 @@ void nwy_paho_mqtt_test_mine(int step, char *para1, char *para2, char *para3 ,ch
 	        memset(&pubmsg, 0, sizeof(pubmsg));
             pubmsg.payload =(void *)paho_mqtt_at_param.message;
             pubmsg.payloadlen = leng_mqtt;// strlen(paho_mqtt_at_param.message);
+/*             nwy_ext_echo("\r\nReply_mqtt-mgs===");
+            for(int nnn =0 ;nnn < leng_mqtt;nnn++) {
+              nwy_ext_echo("%x-",*(paho_mqtt_at_param.message + nnn)); 
+            } */
             pubmsg.qos = paho_mqtt_at_param.qos;
             pubmsg.retained = paho_mqtt_at_param.retained;
             pubmsg.dup = 0;
@@ -756,6 +773,7 @@ char port_Num[8]="1883";////New
 
 #endif 
     static int i = 0;
+    static uint32_t time = 0;
     char time_buf[32];
 
   if(Is_Valid_IP(&Net_Info.mqttip[0])) {
@@ -773,10 +791,12 @@ char port_Num[8]="1883";////New
         xb_Mqtt_Step = 1;
         if(MQTTIsConnected(&paho_mqtt_client)){
             nwy_sleep(3000);
+            time +=3;
             i++;
-            nwy_ext_echo("\r\nMqtt_On_Line_Time:%d",i*3);
+            nwy_ext_echo("\r\nMqtt_On_Line_Time:%d,%d",i*3,time);
         }else{
             i = 0;
+            
             nwy_ext_echo("\r\nExecute_Mqtt_Now---setup_tcp:%d",i);
             nwy_get_time(&xb_time, &xb_timezone);
             memset(Client_ID,0,sizeof(Client_ID));

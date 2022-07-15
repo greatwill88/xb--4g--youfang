@@ -38,12 +38,17 @@ void debug_net(Net_Set_Typedef *pt) {
 }
 
 
-uint8_t Is_Valid_IP(char *buf) {
-    char *pt = &buf[0];
+uint8_t Is_Valid_IP(char *buf_in) {
+    char *pt;
     char *para;
     int len ;
     uint16_t value; 
     uint16_t ip1,ip2,ip3,ip4;
+
+    char buf[32];
+    memset(buf,0,32);
+    memcpy(buf, buf_in , 16);
+    pt = &buf[0];
 
     uint8_t i;
     uint8_t num = 0;
@@ -67,7 +72,7 @@ uint8_t Is_Valid_IP(char *buf) {
     para = strtok(NULL, ".");
     ip3 = atoi(strtok(NULL, "."));
 
-    nwy_ext_echo("V123==%d,%d,%d",ip1,ip2,ip3);
+    nwy_ext_echo("V123==%d,%d,%d,%d",ip1,ip2,para,ip3);
 
     if(ip1 > 255) return 0;
     if(ip2 > 255) return 0;
@@ -237,10 +242,10 @@ void conver_Crc(uint16_t crc ,uint8_t *buf) {
     buf[1] = crc & 0xff;    
 }
 
-void conver_Data(uint16_t crc ,uint8_t *buf) {
-    buf[0]  = value_zone_0 >>8; 
-    buf[1] = value_zone_0 & 0xff;
-   
+void conver_Data_Low_F(uint16_t value ,uint8_t *buf) {
+
+    buf[0] = value & 0xff;
+    buf[1]  = value >>8;    
 }
 
 uint16_t conver_u8_u16(char *buf) {
@@ -260,7 +265,22 @@ void handle_Net_Cmd(char *buf , int len) {
         nwy_ext_echo("%x-",buf[i]);
     }
 
-
+    if(strstr(pt,"cloud=?")) {
+        nwy_ext_echo(" \r\nCloud_Cmd==Query");
+       Reply_Cloud_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
+       nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
+    } else if(strstr(pt,"restart")) {
+        Reply_Restart(mqtt_report_Msg, MSG_REPLY_LEN);
+        nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
+        nwy_sleep(100);
+        nwy_power_off(2);
+    }  else if((strstr(pt,"\"cmd\": \"sets\","))) {
+        pt += strlen("\"cmd\": \"sets\",");
+        Handle_Set_Cmd(pt);
+        Reply_Set_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
+        nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
+    } else {
+        memset(mqtt_report_Msg, 0 ,sizeof(mqtt_report_Msg));
     if(buf[0] == 0){
         if(buf[1] == 0x01) {
             mqtt_report_Msg[0] = 0x00;
@@ -274,11 +294,13 @@ void handle_Net_Cmd(char *buf , int len) {
             mqtt_report_Len = 6;
 
         } else  if(buf[1] == 0x05) {
-            uint16_t tmp;
-            tmp = mqtt_report_Msg[5];
-            tmp <<= 8;
-            tmp +=  mqtt_report_Msg[4];
+           // uint16_t tmp;
+           // tmp = buf[5];
+           // tmp <<= 8;
+           // tmp +=  buf[4];
 
+           value_zone_0 = conver_u8_u16(&buf[4]);
+           // value_zone_0 = tmp;
 
             for(int j = 0; j < 8;j++) {
               mqtt_report_Msg[j] = buf[j]; 
@@ -288,7 +310,7 @@ void handle_Net_Cmd(char *buf , int len) {
             mqtt_report_Msg[0] = 0x00;
             mqtt_report_Msg[1] = 0x02;            
 
-            conver_Data(value_zone_1 ,&mqtt_report_Msg[2]);
+            conver_Data_Low_F(value_zone_1 ,&mqtt_report_Msg[2]);
             uint16_t crc;
             crc = N_CRC16(mqtt_report_Msg,4);
             conver_Crc(crc ,&mqtt_report_Msg[4]);
@@ -308,9 +330,45 @@ void handle_Net_Cmd(char *buf , int len) {
             nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);                     
           //  nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);           
 
-        } 
+        } else  if(buf[1] == 0x03) {
+
+            uint16_t tmp  = 0; 
+            conver_Data_Low_F(value_zone_0 ,&mqtt_report_Msg[0]);
+            conver_Data_Low_F(value_zone_1 ,&mqtt_report_Msg[2]);
+
+            if(temp_IC > 0)
+                tmp = (uint16_t)(temp_IC * 10);
+            else {
+                tmp = (uint16_t)(temp_IC * 10);
+                tmp = 0x65535 - tmp;
+                tmp +=1 ;
+            }
+            conver_Data_Low_F(tmp ,&mqtt_report_Msg[4]);
+
+            if(voltage_Xb > 0) {
+                tmp = (uint16_t)(voltage_Xb * 10);
+            }
+            conver_Data_Low_F(tmp ,&mqtt_report_Msg[6]);
+            uint16_t crc;
+            crc = N_CRC16(mqtt_report_Msg,4);
+            conver_Crc(crc ,&mqtt_report_Msg[4]);
+           // memcpy(mqtt_report_Msg,buf, 6);     
+            mqtt_report_Len = 6;
+               
+          //  nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);           
+
+        } else  if(buf[1] == 0x04) {
+
+        }
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }
+
+
+
+    }
+
+
+
 
 
 

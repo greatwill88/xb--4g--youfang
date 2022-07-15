@@ -88,8 +88,11 @@ static void nwy_485_recv_handle_2 (const char *str, uint32_t length);
 #define  RS485_RTS_2 19 
 int RS485_hd[2]={-1,-1};
 
-char xb_SubDev_SN[32][12];
+//char xb_SubDev_SN[32][12];
 #define EVENT_REC_485 0x55AA
+
+
+XB_Sub_Dev_Typedef xb_SubDev_SN[32];
 
 uint8_t poll_Cmd[5];
 #define RS_485_DEV 2 
@@ -846,6 +849,18 @@ void Set_Poll_Addr_Pin_Low(void) {
 void handle_n_Iso(const char *str, uint32_t length )
 {
     char temp_buf[4];
+    char id = str[0];
+
+    if(id < 0) id = -id;
+
+    nwy_ext_echo("\r\nPoll_ID==%d",id);    
+    if(id == 0) {
+      return ;
+    }
+    xb_SubDev_SN[id-1].No_Ans_Cnt = 0;
+
+
+
     nwy_ext_echo("\r\nPoll_Length==%d---dev=%d,Total=%d",length,Poll_Addr_id,Dev_Num);
     memset(mqtt_report_Msg,0,sizeof(mqtt_report_Msg));
 
@@ -921,7 +936,7 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
       if(id < 0) id = -id;
       if(id < 32) {
         if(id >= 1)
-        memcpy(&xb_SubDev_SN[id - 1][0],&str[2],12);
+        memcpy(&xb_SubDev_SN[id - 1].sn[0],&str[2],12);
       }
       nwy_ext_echo("\r\nCrc_check--ok--poll");
     } else {
@@ -932,7 +947,7 @@ void handle_rec(int hd,const char *str, uint32_t length ) {
     id = str[0];
     if(id < 0) id = -id;
     if(id <4) {
-      memcpy(&xb_SubDev_SN[id][0],&str[2],12);
+      memcpy(&xb_SubDev_SN[id].sn[0],&str[2],12);
     }    
      nwy_ext_echo("\r\nCrc_check--error"); 
   } 
@@ -1125,12 +1140,12 @@ void Poll_Addr_Thread(void *param) {
         nwy_exit_thread();     
     }
 
-    if(Poll_Addr_id >= 4) {
+/*     if(Poll_Addr_id >= 4) {
       nwy_ext_echo("\r\n exit_thread--");
       Start_Ctrl_Thread(); 
       nwy_exit_thread(); 
 
-    } 
+    }  */
 #endif
    // nwy_sleep(2000);
 
@@ -1207,6 +1222,12 @@ uint8_t volatile fg_Snding_485 = 0;
         poll_id++;
         if(poll_id > Dev_Num) {
           poll_id = 1;
+          for(int i = 1; i <= Dev_Num;i++){
+              if(xb_SubDev_SN[i-1].No_Ans_Cnt < 3) {
+                xb_SubDev_SN[i-1].No_Ans_Cnt++;
+              }
+
+          }
         }
         static uint16_t kkk=0;
         kkk++;

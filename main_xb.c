@@ -439,7 +439,15 @@ void Generate_Comm(char *msg) {
 }
 
 void Generate_OnLine(char *msg) {
-
+    strcat(msg,",");
+    for(int i = 1; i<= Dev_Num;i++) {
+        if(xb_SubDev_SN[i-1].No_Ans_Cnt == 3) {
+            strcat(msg,"0");
+        }else {
+            strcat(msg,"1");
+        }
+    }
+    strcat(msg,",");
 }
 
 /////
