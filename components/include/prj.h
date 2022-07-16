@@ -17,6 +17,13 @@ extern "C" {
 #define RELAY_ALL_OFF   0x1155
 #define RELAY_ALL_RS    0x2255
 #define RELAY_ALL_CLEAR  0x3355
+
+
+#define EVENT_SND_485_ALL_ON RELAY_ALL_ON//0x1132
+#define EVENT_SND_485_ALL_OFF RELAY_ALL_OFF//0x1133
+#define EVENT_SND_485_ALL_CLEAR RELAY_ALL_CLEAR//0x1134
+#define EVENT_SND_485_ALL_RS  RELAY_ALL_CLEAR//0x1135
+
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 
 #define MAX_NUM 32
@@ -39,10 +46,6 @@ extern nwy_osiThread_t *g_RS485_Ctrl_thread;
 extern uint16_t value_zone_1,value_zone_0;
 #define EVENT_SND_485_CTRL 0x1122
 
-#define EVENT_SND_485_ALL_ON 0x1132
-#define EVENT_SND_485_ALL_OFF 0x1133
-#define EVENT_SND_485_ALL_CLEAR 0x1134
-#define EVENT_SND_485_ALL_RS  0x1135
 
 #define REPORT_MQTT_MSG      0x1136
 #define REPORT_MQTT_WG_MSG   0x1137
@@ -61,6 +64,7 @@ extern void convert_hex_Asc(uint8_t *buf, int len, char *result);
 extern uint8_t Conver_Asc_Hex(char *buf, uint8_t *result) ;
 extern void Reply_Cloud_Cmd(char *msg ,int len);
 extern void Handle_Set_Cmd(char *buf);
+extern void conver_Crc(uint16_t crc ,uint8_t *buf);
 //extern nwy_log_cipgsmloc_result_t xb_position;
 
 

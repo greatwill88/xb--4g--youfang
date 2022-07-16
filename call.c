@@ -838,7 +838,8 @@ void Set_Poll_Addr_Pin_Low(void) {
       int port;
      port = 14  ; 
     nwy_gpio_set_direction(port,nwy_output);
-    nwy_gpio_set_value(port,0);  
+   nwy_gpio_set_value(port,0); 
+   //nwy_gpio_set_value(port,1); 
 
      port = 15 ; 
     nwy_gpio_set_direction(port,nwy_output);
@@ -869,7 +870,7 @@ void handle_n_Iso(const char *str, uint32_t length )
 
 
     for(int i = 0; i < length;i++) {
-      nwy_ext_echo("%x-", *(str+i));
+    //  nwy_ext_echo("%x-", *(str+i));
       memset(temp_buf, 0 , 4);
       //snprintf(&mqtt_report_Msg[i*2],256,"%02x", *(str+i));
       snprintf(temp_buf,4,"%02x", *(str+i));
@@ -922,7 +923,10 @@ void handle_Iso_Setting(const char *str, uint32_t length ) {
 void handle_rec(int hd,const char *str, uint32_t length ) {
   int crc;
   char id;
-
+  if(thread_Fg == 0) {
+    nwy_ext_echo("\r\nNot--valid_fg-status");
+    return ;
+  }
 
   crc = N_CRC16(str,length-2);
   nwy_ext_echo("\r\nRs-485-handle--1-crc=%x,length = %d,uart_id = %d",crc,length,hd);
@@ -1088,8 +1092,24 @@ unsigned int N_CRC16(unsigned char *updata,unsigned int len)
   return (uchCRCLo<<8|uchCRCHi);  // 位在前
 }
 
+void Snd_Restart(void)
+{
+    uint8_t buf[5];
+
+    static uint8_t fg = 0;
+
+    if(fg) return ;
+
+    fg = 1;
 
 
+    buf[0] = 0;
+    buf[1] = 0x4e;     
+
+    conver_Crc(N_CRC16(buf,2), &buf[2]);
+    Snd_N_ISO_485(buf ,4);
+    nwy_sleep(1000);  
+}
 
 void Poll_Addr_Thread(void *param) {
 
@@ -1107,7 +1127,7 @@ void Poll_Addr_Thread(void *param) {
   Init_485();
   //  thread_Fg  = 1;  
   while(1) {
-
+    Snd_Restart();
     thread_Fg  = 1;
 
 
@@ -1115,9 +1135,12 @@ void Poll_Addr_Thread(void *param) {
     poll_Cmd[0] = 0;
     poll_Cmd[1] = 0;     
     poll_Cmd[2] = Poll_Addr_id;
-    crc = N_CRC16(poll_Cmd,3);
-    poll_Cmd[3] = crc>>8;
-    poll_Cmd[4] = crc & 0x0ff;
+    // crc = N_CRC16(poll_Cmd,3);
+    // poll_Cmd[3] = crc>>8;
+    // poll_Cmd[4] = crc & 0x0ff;
+
+    conver_Crc(N_CRC16(poll_Cmd,3), &poll_Cmd[3]);
+
     nwy_ext_echo("\r\n Run_Poll_Addr_Thread--1"); 
 
     Snd_N_ISO_485(poll_Cmd ,5);
@@ -1134,7 +1157,7 @@ void Poll_Addr_Thread(void *param) {
     } 
     else 
     {
-      Dev_Num = Poll_Addr_id;
+      Dev_Num = Poll_Addr_id - 1;
         nwy_ext_echo("\r\n Over_Time==%d",Dev_Num);        
         Start_Ctrl_Thread(); 
         nwy_exit_thread();     
@@ -1175,7 +1198,7 @@ void Waiting_Mqtt(uint8_t fg) {
 void Debug_sub_Sn(uint8_t *buf ,int len) {
   nwy_ext_echo("\r\nDebug_sub_Sn");
   for(int i = 0; i < len; i++)
-     nwy_ext_echo("%x",*(buf+i));
+     nwy_ext_echo("%02x",*(buf+i));
 }
 
 uint8_t volatile fg_Snding_485 = 0;
@@ -1201,28 +1224,20 @@ uint8_t volatile fg_Snding_485 = 0;
 
       fg_Snding_485 = 1;
       if((event.id == EVENT_SND_485_ALL_ON) || (event.id == EVENT_SND_485_ALL_OFF) ||\
-         (event.id == EVENT_SND_485_ALL_RS) ||(event.id == EVENT_SND_485_CTRL)||(event.id == EVENT_SND_485_ALL_CLEAR)   ){
+         (event.id == EVENT_SND_485_ALL_RS) ||(event.id == EVENT_SND_485_CTRL)||(event.id == EVENT_SND_485_ALL_CLEAR) ){
         int id_tmp = 1;
-        while(id_tmp <= Dev_Num) {
-          if(event.id == EVENT_SND_485_ALL_ON)
-            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_ON);
-          else if(event.id == EVENT_SND_485_ALL_OFF)
-            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_OFF);
-          else if(event.id == EVENT_SND_485_ALL_RS)
-            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_RS);
-          else if(event.id == EVENT_SND_485_CTRL) {
-            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_ON);   
-          }else if(event.id == EVENT_SND_485_ALL_CLEAR) {
-            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_CLEAR);   
-          }
-       
-          
-          nwy_ext_echo("\r\nSnd_Ctrl_Cmd_App_Event==%,id=%d=%d",RELAY_ALL_ON,id_tmp,Dev_Num); 
-          id_tmp++;
-          if(id_tmp < Dev_Num)
-          nwy_sleep(100);
-        }
-    
+
+        if(event.id == EVENT_SND_485_CTRL) {
+            Snd_Ctrl_Cmd(id_tmp, RELAY_ALL_ON);  
+        } else {
+          while(id_tmp <= Dev_Num) {           
+              Snd_Ctrl_Cmd(id_tmp, event.id);          
+              nwy_ext_echo("\r\nSnd_Ctrl_Cmd_App_Event==%,id=%d=%d",RELAY_ALL_ON,id_tmp,Dev_Num); 
+              id_tmp++;
+              if(id_tmp < Dev_Num)
+              nwy_sleep(100);
+            }
+        }         
 
       } else {
         poll_id++;
