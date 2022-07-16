@@ -1172,6 +1172,12 @@ void Waiting_Mqtt(uint8_t fg) {
   nwy_ext_echo("\r\nGet_mqtt_Sing--%x",nwy_get_current_thread());
 }
 
+void Debug_sub_Sn(uint8_t *buf ,int len) {
+  nwy_ext_echo("\r\nDebug_sub_Sn");
+  for(int i = 0; i < len; i++)
+     nwy_ext_echo("%x",*(buf+i));
+}
+
 uint8_t volatile fg_Snding_485 = 0;
  void Rs485_Ctrl_Thread(void *param) {
   uint16_t crc;
@@ -1222,15 +1228,19 @@ uint8_t volatile fg_Snding_485 = 0;
         poll_id++;
         if(poll_id > Dev_Num) {
           poll_id = 1;
+          nwy_ext_echo("\r\nDev_Total_Num==%d",Dev_Num); 
           for(int i = 1; i <= Dev_Num;i++){
               if(xb_SubDev_SN[i-1].No_Ans_Cnt < 3) {
                 xb_SubDev_SN[i-1].No_Ans_Cnt++;
               }
-
+              nwy_ext_echo("\r\nON_Line_Sub==%d",xb_SubDev_SN[i-1].No_Ans_Cnt);
+              Debug_sub_Sn(&xb_SubDev_SN[i-1].sn[0] ,12);
           }
+          
+
         }
-        static uint16_t kkk=0;
-        kkk++;
+/*         static uint16_t kkk=0;
+        kkk++; */
 
         Snd_N_ISO_485(poll_Ctrl_Cmd , sizeof(poll_Ctrl_Cmd));
 
