@@ -88,6 +88,19 @@ typedef struct {
     char lastWill[32];
 } Net_Set_Typedef;
 
+
+extern void Test_Write_Zone4_Info(void);
+
+typedef struct {
+uint16_t Voltage_Over_Set;
+uint16_t Voltage_Low_Set;
+uint16_t BLE_Scan_Span;
+uint16_t BLE_Min;
+uint16_t BLE_Hour;
+uint16_t BLE_Week;
+}Zone_4_typedef;
+extern Zone_4_typedef Zone4_Info;
+extern void ReadZone4_Info(void);
 typedef struct {
   char sn[12];
   uint16_t No_Ans_Cnt;

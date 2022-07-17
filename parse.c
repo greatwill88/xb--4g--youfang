@@ -187,6 +187,7 @@ void Reply_Cloud_Cmd(char *msg ,int len) {
     Str_3_Cat(msg, "\"laswill\":\"", Net_Info.lastWill,"\",");
     Str_3_Cat(msg, "\"ts\":\":\"", "12345678","\",");////TODO,
     Str_3_Cat(msg, "\"iccid\":\"", xb_sim.iccid,"\"");
+    mqtt_report_Len = strlen(msg);
 
 }
 
@@ -316,14 +317,6 @@ uint16_t Generate_All_Ble(char *buf) {
 
 
 
-typedef struct {
-uint16_t Voltage_Over_Set;
-uint16_t Voltage_Low_Set;
-uint16_t BLE_Scan_Span;
-uint16_t BLE_Min;
-uint16_t BLE_Hour;
-uint16_t BLE_Week;
-}Zone_4_typedef;
 
 Zone_4_typedef Zone4_Info;
 
@@ -485,12 +478,18 @@ void handle_Net_Cmd(char *buf , int len) {
                 position += 6;
             }
 
+            Test_Write_Zone4_Info();
+
             mqtt_report_Msg[0] = buf[0];
             mqtt_report_Msg[1] = buf[1];
             mqtt_report_Msg[2] = 0x01;
             conver_Crc(N_CRC16(&mqtt_report_Msg[0],3), &mqtt_report_Msg[3]);            
             mqtt_report_Len = 5;
 
+        } else {
+            memset(mqtt_report_Msg, 0 , MSG_REPLY_LEN);
+            strcat(mqtt_report_Msg,"byebye");
+            mqtt_report_Len = strlen("byebye");
         }
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
     }

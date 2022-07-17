@@ -144,6 +144,7 @@ void prvThreadEntry_Call(void *param)
 
 
    ReadNet_Info();
+   ReadZone4_Info();
     
   start_Ble_Scan_Thread();
     // nwy_test_cli_ble_open();
