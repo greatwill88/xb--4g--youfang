@@ -440,39 +440,62 @@ void handle_Net_Cmd(char *buf , int len) {
             nwy_ext_echo(" \r\nTotal_Num_Zone3==%d",mqtt_report_Len);      
 
         } else  if(buf[1] == 0x04) {////read ,
-            conver_Data_Low_F(Zone4_Info.Voltage_Over_Set , &mqtt_report_Msg[0]);
-            conver_Data_Low_F(Zone4_Info.Voltage_Low_Set , &mqtt_report_Msg[2]); 
-            conver_Data_Low_F(Zone4_Info.BLE_Scan_Span, &mqtt_report_Msg[4]);
-            conver_Data_Low_F(Zone4_Info.BLE_Min, &mqtt_report_Msg[6]);
-            conver_Data_Low_F(Zone4_Info.BLE_Hour, &mqtt_report_Msg[8]);
-            conver_Data_Low_F(Zone4_Info.BLE_Week, &mqtt_report_Msg[10]);
-            mqtt_report_Msg[12] = White_Name_Num;
+            uint16 pos = 0;
+            conver_Data_Low_F(Zone4_Info.Temp_Set_Hig, &mqtt_report_Msg[pos]);
+            pos+=2;
+            conver_Data_Low_F(Zone4_Info.Temp_Set_Low, &mqtt_report_Msg[pos]);
+            pos+=2;
+
+            conver_Data_Low_F(Zone4_Info.Voltage_Over_Set , &mqtt_report_Msg[pos]);
+            pos+=2;
+
+            conver_Data_Low_F(Zone4_Info.Voltage_Low_Set , &mqtt_report_Msg[pos]);
+            pos+=2;
+
+            conver_Data_Low_F(Zone4_Info.BLE_Scan_Span , &mqtt_report_Msg[pos]);
+            pos+=2;
+
+            conver_Data_Low_F(Zone4_Info.BLE_Min , &mqtt_report_Msg[pos]);
+            pos+=2;
+    
+            conver_Data_Low_F(Zone4_Info.BLE_Hour , &mqtt_report_Msg[pos]);
+            pos+=2;
+
+            conver_Data_Low_F(Zone4_Info.BLE_Week , &mqtt_report_Msg[pos]);
+            pos+=2;
+
+            mqtt_report_Msg[pos++] = White_Name_Num;
 
             uint16 num,position;
-
-            position = 13;
+            nwy_ext_echo(" \r\nZone4_Read==%d",White_Name_Num);
+            position = pos;
             if(White_Name_Num == 0) {
-                memset(&mqtt_report_Msg[13],0,6);
+                memset(&mqtt_report_Msg[position],0,6);
+                position += 6;
             } else {
                 for(int nnn = 0;nnn < White_Name_Num;nnn++) {
-                    memcpy(&mqtt_report_Msg[13],&White_Name_Ble[nnn].addr[0], 6);
+                    memcpy(&mqtt_report_Msg[position],&White_Name_Ble[nnn].addr[0], 6);
                     position += 6;
                 }
             }
-
+            nwy_ext_echo(" \r\nZone4_Read3333==%d",position);
              conver_Crc(N_CRC16(&mqtt_report_Msg[0],position), &mqtt_report_Msg[position]);
              mqtt_report_Len = position + 2;
 
 ///Voltage_Over_Set
         } else if(buf[1] == 0x10) {
-           Zone4_Info.Voltage_Over_Set = conver_u8_u16(&buf[2]);
-           Zone4_Info.Voltage_Low_Set = conver_u8_u16(&buf[4]);
-           Zone4_Info.BLE_Scan_Span = conver_u8_u16(&buf[6]);
-           Zone4_Info.BLE_Min = conver_u8_u16(&buf[8]);
-           Zone4_Info.BLE_Hour = conver_u8_u16(&buf[10]);
-           Zone4_Info.BLE_Week = conver_u8_u16(&buf[12]);
-           White_Name_Num = buf[14];
-           uint16_t position = 15;
+            uint16 pos = 0;
+           Zone4_Info.Temp_Set_Hig = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.Temp_Set_Low = conver_u8_u16(&buf[pos]); pos +=2;
+          
+           Zone4_Info.Voltage_Over_Set = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.Voltage_Low_Set = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.BLE_Scan_Span = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.BLE_Min = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.BLE_Hour = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.BLE_Week = conver_u8_u16(&buf[pos]); pos +=2;
+           White_Name_Num = buf[pos++];
+           uint16_t position = pos;
             for(int nnn = 0;nnn < White_Name_Num;nnn++) {
                 memcpy(&White_Name_Ble[nnn].addr[0],&buf[position], 6);
                 position += 6;
