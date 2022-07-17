@@ -322,12 +322,15 @@ void handle_Net_Cmd(char *buf , int len) {
             memcpy(mqtt_report_Msg,buf, 6);     
             mqtt_report_Len = 6;
             int i = 0;
-            if(cmd == 0x5500) {i = 0;}
-            else  if(cmd == 0x5511) {i = 1;}
-            else  if(cmd == 0x5522) {i = 2;}
-            else  if(cmd == 0x5533) {i = 3;}
+            uint32 event_id ;
+            
+            if(cmd == 0x5500) {i = 0;  event_id = EVENT_SND_485_ALL_ON;}
+            else  if(cmd == 0x5511) {i = 1; event_id = EVENT_SND_485_ALL_OFF;}
+            else  if(cmd == 0x5522) {i = 2;event_id = EVENT_SND_485_ALL_CLEAR;}
+            else  if(cmd == 0x5533) {i = 3;event_id = EVENT_SND_485_ALL_RS;}
+            nwy_ext_echo(" \r\nSet_relay--cmd==%x,%x",cmd,event_id);
             Waiting_Mqtt(fg_Snding_485);
-            nwy_ext_send_sig(g_RS485_Ctrl_thread,EVENT_SND_485_CTRL+i);                     
+            nwy_ext_send_sig(g_RS485_Ctrl_thread,event_id);                     
           //  nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);           
 
         } else  if(buf[1] == 0x03) {

@@ -326,7 +326,7 @@ void nwy_at_sms_test(void)
 }
 #endif
 
-void nwy_ext_send_sig(nwy_osiThread_t *thread,uint16 sig)
+void nwy_ext_send_sig(nwy_osiThread_t *thread,uint32 sig)
 {
     nwy_osiEvent_t event;
 

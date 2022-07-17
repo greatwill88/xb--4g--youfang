@@ -15,14 +15,14 @@ extern "C" {
 //#define TEST_HELLO_WORLD 
 #define RELAY_ALL_ON    0x0055
 #define RELAY_ALL_OFF   0x1155
-#define RELAY_ALL_RS    0x2255
-#define RELAY_ALL_CLEAR  0x3355
+#define RELAY_ALL_RS    0x3355
+#define RELAY_ALL_CLEAR  0x2255
 
 
 #define EVENT_SND_485_ALL_ON RELAY_ALL_ON//0x1132
 #define EVENT_SND_485_ALL_OFF RELAY_ALL_OFF//0x1133
 #define EVENT_SND_485_ALL_CLEAR RELAY_ALL_CLEAR//0x1134
-#define EVENT_SND_485_ALL_RS  RELAY_ALL_CLEAR//0x1135
+#define EVENT_SND_485_ALL_RS  RELAY_ALL_RS//0x1135
 
 #define NWY_EXT_SIO_RX_MAX          (2 * 1024)
 
@@ -146,7 +146,7 @@ extern void test_485_snd(void);
 extern void Poll_Addr_Thread(void *param);
 extern unsigned int N_CRC16(unsigned char *updata,unsigned int len);
 extern void Start_Poll_Addr_Thread(void);
-extern void nwy_ext_send_sig(nwy_osiThread_t *thread,uint16 sig);
+extern void nwy_ext_send_sig(nwy_osiThread_t *thread,uint32 sig);
 extern void Start_Ctrl_Thread(void);
 extern void Key_Init_Fun(void);
 extern void prvThreadEntry_Key_Thread(void *param);
