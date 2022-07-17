@@ -497,6 +497,7 @@ void nwy_test_cli_ble_client_set_enable()
 
 
 BLE_ADDRESS White_Name_Ble[100];
+uint8_t White_Name_Num = 0;
 
 
 typedef struct

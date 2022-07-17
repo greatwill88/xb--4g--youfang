@@ -175,6 +175,8 @@ void Reply_Cloud_Cmd(char *msg ,int len) {
     memset(msg,0 ,len);
     strcat(msg,"\"cmd\": \"cloud\""); 
     Str_3_Cat(msg, "\"sn\":\"XBWG", xb_sim.nImei,"\",");
+    strcat(msg,"\"model1\": \"XB1-2P4G/GZ\"");
+    strcat(msg,"\"baud\": \"115200\"");
     Str_3_Cat(msg, "\"mqttip\":\"", Net_Info.mqttip,"\",");
     Str_3_Cat(msg, "\"mqttport\":\"", Net_Info.mqttport,"\",");
     Str_3_Cat(msg, "\"mqttdomain\":\"", Net_Info.domain,"\",");
@@ -257,6 +259,74 @@ uint16_t conver_u8_u16(char *buf) {
     return tmp; 
 }
 
+
+
+void Generate_Sub_Dev_OnLine(char *buf) {
+
+    uint32 fg_On_Line = 0;
+
+    for(uint16_t i = 0; i < 32;i++) {
+        if(xb_SubDev_SN[i].No_Ans_Cnt != 3) {
+            fg_On_Line |= (1 << i);
+        }
+    }
+
+    buf[0] = fg_On_Line & 0xff;
+    buf[1] = (fg_On_Line >> 8) & 0xff;
+    buf[2] = (fg_On_Line >> 16) & 0xff;   
+    buf[3] = (fg_On_Line >> 24) & 0xff;
+ 
+}
+
+void Generate_Sub_Dev_OnOff(char *buf) {
+
+    uint32 fg_On_Line = 0;
+
+    for(uint16_t i = 0; i < 32;i++) {
+        if(xb_SubDev_SN[i].No_Ans_Cnt != 3) {
+            fg_On_Line |= (1 << i);
+        }
+    }
+
+    buf[0] = fg_On_Line & 0xff;
+    buf[1] = (fg_On_Line >> 8) & 0xff;
+    buf[2] = (fg_On_Line >> 16) & 0xff;   
+    buf[3] = (fg_On_Line >> 24) & 0xff;
+ 
+}
+
+
+
+uint16_t Generate_All_Ble(char *buf) {
+
+
+    char *pt = buf;
+    uint16_t num = 0;
+
+
+    for(uint16_t i = 0; i < BLE_num_Scan;i++) {
+        memcpy(pt + num, &scan_info[BLE_num_Scan].bdAddress.addr[0], 6);
+        num += 6;
+    }
+    return num;
+
+
+ 
+}
+
+
+
+typedef struct {
+uint16_t Voltage_Over_Set;
+uint16_t Voltage_Low_Set;
+uint16_t BLE_Scan_Span;
+uint16_t BLE_Min;
+uint16_t BLE_Hour;
+uint16_t BLE_Week;
+}Zone_4_typedef;
+
+Zone_4_typedef Zone4_Info;
+
 void handle_Net_Cmd(char *buf , int len) {
     char *pt;
     pt = buf;
@@ -335,10 +405,12 @@ void handle_Net_Cmd(char *buf , int len) {
 
         } else  if(buf[1] == 0x03) {
 
-            uint16_t tmp  = 0; 
+            uint16_t tmp  = 0;
+            uint16 position = 19;
+
             conver_Data_Low_F(value_zone_0 ,&mqtt_report_Msg[0]);
             conver_Data_Low_F(value_zone_1 ,&mqtt_report_Msg[2]);
-
+            nwy_ext_echo(" \r\nTemp_ic==%f",temp_IC);
             if(temp_IC > 0)
                 tmp = (uint16_t)(temp_IC * 10);
             else {
@@ -347,20 +419,77 @@ void handle_Net_Cmd(char *buf , int len) {
                 tmp +=1 ;
             }
             conver_Data_Low_F(tmp ,&mqtt_report_Msg[4]);
-
+            nwy_ext_echo(" \r\nTemp_ic==%f",voltage_Xb);
             if(voltage_Xb > 0) {
                 tmp = (uint16_t)(voltage_Xb * 10);
             }
             conver_Data_Low_F(tmp ,&mqtt_report_Msg[6]);
-            uint16_t crc;
-            crc = N_CRC16(mqtt_report_Msg,4);
-            conver_Crc(crc ,&mqtt_report_Msg[4]);
-           // memcpy(mqtt_report_Msg,buf, 6);     
-            mqtt_report_Len = 6;
-               
-          //  nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);           
+            conver_Data_Low_F(Dev_Num ,&mqtt_report_Msg[8]);
+            Generate_Sub_Dev_OnLine(&mqtt_report_Msg[10]);
+            Generate_Sub_Dev_OnOff(&mqtt_report_Msg[14]);
+            mqtt_report_Msg[18] = White_Name_Num;
 
-        } else  if(buf[1] == 0x04) {
+            uint16 num;
+            if(White_Name_Num == 0) {
+                memset(&mqtt_report_Msg[19],0,6);
+            } else {
+                for(int nnn = 0;nnn < White_Name_Num;nnn++) {
+                    memcpy(&mqtt_report_Msg[19],&White_Name_Ble[nnn].addr[0], 6);
+                    position += 6;
+                }
+            }
+
+            num = Generate_All_Ble(&mqtt_report_Msg[position]);
+            uint16_t crc;
+            crc = N_CRC16(mqtt_report_Msg,position + num);
+            conver_Crc(crc ,&mqtt_report_Msg[position + num]);    
+            mqtt_report_Len = position + num + 2;
+            nwy_ext_echo(" \r\nTotal_Num_Zone3==%d",mqtt_report_Len);      
+
+        } else  if(buf[1] == 0x04) {////read ,
+            conver_Data_Low_F(Zone4_Info.Voltage_Over_Set , &mqtt_report_Msg[0]);
+            conver_Data_Low_F(Zone4_Info.Voltage_Low_Set , &mqtt_report_Msg[2]); 
+            conver_Data_Low_F(Zone4_Info.BLE_Scan_Span, &mqtt_report_Msg[4]);
+            conver_Data_Low_F(Zone4_Info.BLE_Min, &mqtt_report_Msg[6]);
+            conver_Data_Low_F(Zone4_Info.BLE_Hour, &mqtt_report_Msg[8]);
+            conver_Data_Low_F(Zone4_Info.BLE_Week, &mqtt_report_Msg[10]);
+            mqtt_report_Msg[12] = White_Name_Num;
+
+            uint16 num,position;
+
+            position = 13;
+            if(White_Name_Num == 0) {
+                memset(&mqtt_report_Msg[13],0,6);
+            } else {
+                for(int nnn = 0;nnn < White_Name_Num;nnn++) {
+                    memcpy(&mqtt_report_Msg[13],&White_Name_Ble[nnn].addr[0], 6);
+                    position += 6;
+                }
+            }
+
+             conver_Crc(N_CRC16(&mqtt_report_Msg[0],position), &mqtt_report_Msg[position]);
+             mqtt_report_Len = position + 2;
+
+///Voltage_Over_Set
+        } else if(buf[1] == 0x10) {
+           Zone4_Info.Voltage_Over_Set = conver_u8_u16(&buf[2]);
+           Zone4_Info.Voltage_Low_Set = conver_u8_u16(&buf[4]);
+           Zone4_Info.BLE_Scan_Span = conver_u8_u16(&buf[6]);
+           Zone4_Info.BLE_Min = conver_u8_u16(&buf[8]);
+           Zone4_Info.BLE_Hour = conver_u8_u16(&buf[10]);
+           Zone4_Info.BLE_Week = conver_u8_u16(&buf[12]);
+           White_Name_Num = buf[14];
+           uint16_t position = 15;
+            for(int nnn = 0;nnn < White_Name_Num;nnn++) {
+                memcpy(&White_Name_Ble[nnn].addr[0],&buf[position], 6);
+                position += 6;
+            }
+
+            mqtt_report_Msg[0] = buf[0];
+            mqtt_report_Msg[1] = buf[1];
+            mqtt_report_Msg[2] = 0x01;
+            conver_Crc(N_CRC16(&mqtt_report_Msg[0],3), &mqtt_report_Msg[3]);            
+            mqtt_report_Len = 5;
 
         }
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);

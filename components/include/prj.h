@@ -159,6 +159,8 @@ extern int mqtt_report_Len;
 extern MQTTClient paho_mqtt_client;
 extern void handle_Net_Cmd(char *buf,int len);
 extern void Waiting_Mqtt(uint8_t signal);
+extern uint8_t White_Name_Num;
+extern BLE_ADDRESS White_Name_Ble[100];
 #ifdef __cplusplus
 }
 #endif
