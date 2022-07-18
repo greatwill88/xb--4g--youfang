@@ -382,10 +382,10 @@ void Generate_pos(char *msg) {
     param =  &xb_position;
 
     memset(pos,0,16);
-    snprintf(pos,16,"%.4f",param->info.data.lat);
+    snprintf(pos,16,"%.8f",param->info.data.lat);
     Str_2_Cat(msg, pos,"-");
     memset(pos,0,16);
-    snprintf(pos,16,"%.4f",param->info.data.lng);
+    snprintf(pos,16,"%.8f",param->info.data.lng);
     strcat(msg, pos);
 
 }

@@ -254,9 +254,9 @@ void messageArrived(MessageData* md)
   {
     memset(echo_buff, 0, sizeof(echo_buff));
     strncpy(echo_buff, md->message->payload, md->message->payloadlen);
-    nwy_ext_echo("\r\npayLoad--33====");
-    nwy_ext_echo(echo_buff);
-    nwy_ext_echo("\r\npayLoad--44====");
+    //nwy_ext_echo("\r\npayLoad--33====");
+   // nwy_ext_echo(echo_buff);
+   // nwy_ext_echo("\r\npayLoad--44====");
     handle_Net_Cmd(md->message->payload, md->message->payloadlen);
 
   }

@@ -1302,8 +1302,24 @@ uint8_t volatile fg_Snding_485 = 0;
     g_RS485_Ctrl_thread = nwy_create_thread("RS485_Ctrl_Thread", Rs485_Ctrl_Thread, NULL, NWY_OSI_PRIORITY_HIGH, 1024*5, 16);
  }
 
+void SysReset_Thread(void *param) {
+    uint16_t nnn = 0;
 
+    while(1) {
+        while(nnn < 5) {
+          nwy_sleep(1000);
+          nnn++;
+        } 
+        nwy_power_off(2);
+    }
+  
+  
+  }
 
+  nwy_osiThread_t *g_Reset_Ctrl_thread = NULL;
+  void Start_Reset_Thread(void) {
+    g_Reset_Ctrl_thread = nwy_create_thread("SysReset_Thread_1", SysReset_Thread, NULL, NWY_OSI_PRIORITY_HIGH, 1024*1, 16);
+ }
 
   void snd_key_Event(void) {
   nwy_osiEvent_t event;

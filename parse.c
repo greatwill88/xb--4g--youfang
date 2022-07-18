@@ -15,6 +15,7 @@ void Reply_Restart(char *msg,int len){
     memset(msg,0 ,len);
     Str_3_Cat(msg, "\"sn\":\"XBWG", xb_sim.nImei,"\",");
     strcat(msg,"\"cmd\": \"restart\"");
+    mqtt_report_Len = strlen(msg);
 
 }
 
@@ -107,10 +108,11 @@ void Handle_Set_Cmd(char *buf) {
     char *para;
     char *temp;
 
-    pt = malloc(len);
+    pt = malloc(len+1);
     nwy_ext_echo("\r\nHandle_Set_Cmd==%d,%s",len,buf);
     if(pt) {
         memcpy(pt, buf, len);
+        pt[len] = 0;
         para = strtok(pt, ",");
         if(para == NULL) {
             nwy_ext_echo("\r\nHandle_Set_Cmd--error");
@@ -127,6 +129,7 @@ void Handle_Set_Cmd(char *buf) {
                 
                 len = strlen(temp);
                 nwy_ext_echo("\r\nMqtt_Temp===%s,%d",temp,len);
+                memset(Net_Info.mqttip,0 ,16);
                 memcpy(Net_Info.mqttip,temp,len);
                 nwy_ext_echo("\r\nMqtt--ip==%s", Net_Info.mqttip);
 
@@ -152,6 +155,7 @@ void Handle_Set_Cmd(char *buf) {
                 nwy_ext_echo("\r\n hold_Time==%s", Net_Info.hold_Time);
             }else if((temp =strstr(para, "\"laswill\":\"")) != NULL) {
                 temp += strlen("\"laswill\":\"");
+                memset(Net_Info.lastWill,0 ,sizeof(Net_Info.lastWill));
                 memcpy(Net_Info.lastWill,temp,sizeof(Net_Info.lastWill));
                 nwy_ext_echo("\r\n lastWill==%s", Net_Info.lastWill);
             } else {
@@ -335,10 +339,12 @@ void handle_Net_Cmd(char *buf , int len) {
     } else if(strstr(pt,"restart")) {
         Reply_Restart(mqtt_report_Msg, MSG_REPLY_LEN);
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
-        nwy_sleep(100);
-        nwy_power_off(2);
-    }  else if((strstr(pt,"\"cmd\": \"sets\","))) {
-        pt += strlen("\"cmd\": \"sets\",");
+        Start_Reset_Thread();
+       // nwy_sleep(5000*5);
+        //nwy_power_off(2);
+    }  else if((strstr(pt,"\"cmd\":\"sets\","))) {
+        buf[len] = 0;
+        pt += strlen("\"cmd\":\"sets\",");
         Handle_Set_Cmd(pt);
         Reply_Set_Cmd(mqtt_report_Msg, MSG_REPLY_LEN);
         nwy_ext_send_sig(mqtt_Snd_task_id,REPORT_MQTT_CTRL_CMD);
@@ -462,7 +468,7 @@ void handle_Net_Cmd(char *buf , int len) {
             pos+=2;
 
             conver_Data_Low_F(Zone4_Info.BLE_Week , &mqtt_report_Msg[pos]);
-            pos+=2;
+            pos+=1;
 
             mqtt_report_Msg[pos++] = White_Name_Num;
 
@@ -493,7 +499,7 @@ void handle_Net_Cmd(char *buf , int len) {
            Zone4_Info.BLE_Scan_Span = conver_u8_u16(&buf[pos]); pos +=2;
            Zone4_Info.BLE_Min = conver_u8_u16(&buf[pos]); pos +=2;
            Zone4_Info.BLE_Hour = conver_u8_u16(&buf[pos]); pos +=2;
-           Zone4_Info.BLE_Week = conver_u8_u16(&buf[pos]); pos +=2;
+           Zone4_Info.BLE_Week = conver_u8_u16(&buf[pos]); pos +=1;
            White_Name_Num = buf[pos++];
            uint16_t position = pos;
             for(int nnn = 0;nnn < White_Name_Num;nnn++) {

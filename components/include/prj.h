@@ -90,7 +90,7 @@ typedef struct {
 
 
 extern void Test_Write_Zone4_Info(void);
-
+extern void Start_Reset_Thread(void);
 typedef struct {
 uint16_t Temp_Set_Hig;
 uint16_t Temp_Set_Low;
